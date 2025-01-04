@@ -47,15 +47,11 @@ This project focuses on creating data pipelines to support a real-time dashboard
  - https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1
 
 ### Access to Airflow 
-  - Airflow: https://edit-data-eng.duckdns.org/
-  - DAG scripts: https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false
+  - [Airflow](https://edit-data-eng.duckdns.org/)
+    - Username - daniel.moraes@̶w̶e̶a̶r̶e̶e̶d̶i̶t̶.̶i̶o̶ (without @weareedit.io)
+    - Password - Given by Gonçalo
+  - [DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
 
-  - Ex: daniel.moraes@weareedit.io
-  - Username - daniel.moraes
-  - Password - Given by Gonçalo
-
-
-  
 ### Access to BigQuery
   - 
 
@@ -70,21 +66,85 @@ This project focuses on creating data pipelines to support a real-time dashboard
 
 
 
-## Run GCloud load locally 
+# Project Setup Guide
 
-Requirements
+## Prerequisites
 
-- Install requirements.txt
-  - python3 -m venv .project  
-  - source .project/bin/activate
-  - pip3 install -r requirements.txt
-- Install GCloud CLI - (MAC: brew install --cask google-cloud-sdk )
-  - Install Brew - (MAC: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)")
-- Run GCloud Config
-  - gcloud init
-  - gcloud auth application-default login
+Before starting, ensure you have Python 3.x installed on your system.
 
-Run python script
+## Installation Instructions
+
+### MAC
+
+Create and activate virtual environment:
+```sh
+python3 -m venv .project
+source .project/bin/activate
+```
+
+Install dependencies:
+```sh
+pip3 install -r requirements.txt
+```
+
+### Windows
+
+Create and activate virtual environment:
+```sh
+python -m venv .project
+.\project\Scripts\activate.bat
+```
+
+Install dependencies:
+```sh
+pip install -r requirements.txt
+```
+
+## Google Cloud Setup
+We also need to have GC SDK installed to connect with the Google Cloude Services platform and BigQuery.
+
+### Installing Google Cloud SDK
+
+#### MAC
+
+Install Homebrew:
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+Install Google Cloud SDK using Homebrew:
+```sh
+brew install --cask google-cloud-sdk
+```
+
+#### Windows
+
+Download the Google Cloud SDK Installer from: [Google Cloud SDK Installer](https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe)
+
+Run the installer and follow the installation wizard.
+
+Add the SDK to System PATH:
+1. Open **Edit System Envirnomenet Variables**.
+2. Under **System Variables**, select **Path**.
+3. Add the installation path (typically `C:\Users\YourUsername\AppData\Local\Google\Cloud SDK`).
+
+Verify installation by opening a new command prompt:
+```sh
+gcloud version
+```
+
+### Configuring Google Cloud
+
+Initialize Google Cloud:
+```sh
+gcloud init
+```
+
+Set up application default credentials and log into your EDIT account:
+```sh
+gcloud auth application-default login
+```
+  
+----
+
+Run python script 
 - python3 airflow_dags/upload_data.py  <bucket-name> <source-file-name> <target-file-name>
-
-Install
