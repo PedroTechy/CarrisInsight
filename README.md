@@ -70,7 +70,8 @@ Requirements
   - python3 -m venv .project  
   - source .project/bin/activate
   - pip3 install -r requirements.txt
-- Install GCloud CMD - (MAC: brew install --cask google-cloud-sdk )
+- Install GCloud CLI - (MAC: brew install --cask google-cloud-sdk )
+  - Install Brew - (MAC: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)")
 - Run GCloud Config
   - gcloud init
   - gcloud auth application-default login
