@@ -1,3 +1,4 @@
 *.json
 */bin
-.project/
+.project/bin
+*.csv
