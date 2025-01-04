@@ -67,6 +67,9 @@ This project focuses on creating data pipelines to support a real-time dashboard
 Requirements
 
 - Install requirements.txt
+  - python3 -m venv .project  
+  - source .project/bin/activate
+  - pip3 install -r requirements.txt
 - Install GCloud CMD - (MAC: brew install --cask google-cloud-sdk )
 - Run GCloud Config
   - gcloud init
@@ -74,3 +77,6 @@ Requirements
 
 Run python script 
 - python3 airflow_dags/upload_data.py  <bucket-name> <source-file-name> <target-file-name>
+
+
+Install
