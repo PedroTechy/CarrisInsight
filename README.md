@@ -66,13 +66,43 @@ This project is organized into three main folders, each corresponding to a key c
 * Python
 
 ## Deliverables 
-* Dashboard mockup
+* Dashbaord mockup
 
 ## Optional Features
 * Add extra data sources to enrich output:
    -- weather, traffic, cultural/social events, interest points 
+* 
 
----
+## Checklist 
+
+### Bucket for dags
+ -  https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&invt=Abl7xA&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false
+
+### Bucket for raw data dump and staging 
+ - 
+
+### Bucket for reading streaming data 
+ - https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1
+
+### Access to Airflow 
+  - [Airflow](https://edit-data-eng.duckdns.org/)
+    - Username - daniel.moraes@̶w̶e̶a̶r̶e̶e̶d̶i̶t̶.̶i̶o̶ (without @weareedit.io)
+    - Password - Given by Gonçalo
+  - [DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
+
+### Access to BigQuery
+  - 
+
+
+## Project notes diary
+
+### Day 1 
+ - Extract data from API and load in bucket
+      https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py
+
+ - Get data from bucket - transform to tabular - load to big query 
+
+
 
 # Project Setup Guide
 
@@ -100,9 +130,7 @@ pip3 install -r requirements.txt
 Create and activate virtual environment:
 ```sh
 python -m venv .project
-```
-```sh
-.\.project\Scripts\Activate.ps1
+.\project\Scripts\activate.bat
 ```
 
 Install dependencies:
@@ -111,7 +139,7 @@ pip install -r requirements.txt
 ```
 
 ## Google Cloud Setup
-We also need to have GC SDK installed to connect with the Google Cloud Services platform and BigQuery.
+We also need to have GC SDK installed to connect with the Google Cloude Services platform and BigQuery.
 
 ### Installing Google Cloud SDK
 
@@ -133,9 +161,9 @@ Download the Google Cloud SDK Installer from: [Google Cloud SDK Installer](https
 Run the installer and follow the installation wizard.
 
 Add the SDK to System PATH:
-1. Open **Edit System Environment Variables**.
+1. Open **Edit System Envirnomenet Variables**.
 2. Under **System Variables**, select **Path**.
-3. Add the installation path (typically `C:\Users\YourUsername\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin`).
+3. Add the installation path (typically `C:\Users\YourUsername\AppData\Local\Google\Cloud SDK`).
 
 Verify installation by opening a new command prompt:
 ```sh
@@ -153,18 +181,7 @@ Set up application default credentials and log into your EDIT account:
 ```sh
 gcloud auth application-default login
 ```
-
-## DBT Setup
-
-- [DBT Setup Repo with README](https://github.com/jgnog/edit-de-project-dbt)
-
-Setup the working directory for dbt:
-(Make sure you are in the correct directory - dbt_project)
-![image](https://github.com/user-attachments/assets/9422f03b-ba58-4bf9-a946-42ccdb4c48f0)
-```sh
-export DBT_PROFILES_DIR=.
-```
-
+  
 ----
 
 Run python script 
