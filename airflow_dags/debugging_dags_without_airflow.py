@@ -17,11 +17,11 @@ def extract_and_store_data_test(endpoint):
     else:
         raise Exception(f"Failed to fetch data from {url}. Status code: {response.status_code}")
         
-    local_file_path = f"shapes.json"
+    local_file_path = f"{endpoint}.json"
     with open(local_file_path, 'wb') as f:
         f.write(data)
 
     x = 1
 
-endpoint = "shapes"
+endpoint = "municipalities"
 x = extract_and_store_data_test(endpoint)

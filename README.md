@@ -27,8 +27,50 @@ This project focuses on creating data pipelines to support a real-time dashboard
 * dbt
 * Python
 
-## Future Enhancements
-* Adding more data sources.
-* Improving batch pipeline for historical data.
-* Adding monitoring and alerting features.
+## Deliverables 
+* Dashbaord mockup
 
+## Optional Features
+* Add extra data sources to enrich output:
+   -- weather, traffic, cultural/social events, interest points 
+* 
+
+## Checklist 
+
+### Bucket for dags
+ -  https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&invt=Abl7xA&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false
+
+### Bucket for raw data dump and staging 
+ - 
+
+### Bucket for reading streaming data 
+ - https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1
+
+### Access to Airflow 
+  - 
+### Access to BigQuery
+  - 
+
+
+## Project notes diary
+
+### Day 1 
+ - Extract data from API and load in bucket
+      https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py
+
+ - Get data from bucket - transform to tabular - load to big query 
+
+
+
+## Run GCloud load locally 
+
+Requirements
+
+- Install requirements.txt
+- Install GCloud CMD - (MAC: brew install --cask google-cloud-sdk )
+- Run GCloud Config
+  - gcloud init
+  - gcloud auth application-default login
+
+Run python script 
+- python3 airflow_dags/upload_data.py  <bucket-name> <source-file-name> <target-file-name>
