@@ -32,3 +32,17 @@ This project focuses on creating data pipelines to support a real-time dashboard
 * Improving batch pipeline for historical data.
 * Adding monitoring and alerting features.
 
+## Checklist 
+
+Bucket for dags
+ -  https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&invt=Abl7xA&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false
+
+Bucket for raw data dump and staging 
+ - ?
+
+Bucket for streaming data 
+ - https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1
+
+Access to Airflow 
+  - 
+Access to BigQuery
