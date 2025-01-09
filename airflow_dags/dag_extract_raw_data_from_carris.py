@@ -1,44 +1,47 @@
 """
+Carris Data Pipeline DAG
+=======================
 
-Airflow DAG that is responsabale for extracting the needed data from the Carris api, upload it to the 
-Google Cloud Storage bucket (GCS) and insert into BigQuery as a dataset. It consists of three main taks:
-- extract_and_store_json_data: responsable for extracting the data from the endoipoint needed and upload it
-to GCS as .json files.
+An Airflow DAG that extracts data from the Carris API, stores it in Google Cloud Storage (GCS),
+and loads it into BigQuery as tables. This pipeline handles both JSON and ZIP file formats,
+performing the minimum necessary transformations during the process.
 
-- extract_and_store_zip_files: similiar to task before, however the data being extracted from this endpoit is not .json,
-but rather a zip file with .txt files inside. Here we extract only the needed .txt data inside such zip file and load it as .csv to GCS.
- 
-- responsable for creating the tables inside the BigQuery based on the folder present in the bucket. Is able to load only new data and does
-some preprocessing to deal with column issues when creating the tables. 
+Tasks
+-----
+1. extract_and_store_json_data
+    - Extracts data from specified API endpoints
+    - Transforms response into JSON format
+    - Uploads resulting files to GCS with .json extension
 
-As we want this DAG to be able to run as a standalone script, lots of functions and other dependencias that 
-could be moved to other folder are being place in the main script. 
+2. extract_and_upload_zip_task
+    - Downloads and processes ZIP files from API
+    - Extracts relevant .txt files from the ZIP archives
+    - Converts data to CSV format
+    - Uploads processed files to GCS with .csv extension
 
+3. load_to_bigquery_task
+    - Creates or updates BigQuery tables based on GCS content
+    - Performs incremental loading of new data
+    - Preprocesses data for consistency (avoid errors when creating tables)
 
 """
-# Imports 
+import io
 import json
+import logging
+import os
+import sys
+from datetime import datetime, timedelta
+from io import StringIO
+from typing import List, Optional
+from zipfile import ZipFile
+import numpy as np
+import pandas as pd
+import requests
+from google.api_core.exceptions import NotFound
+from google.cloud import bigquery, storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
-from datetime import datetime, timedelta
-import requests
-import os
-import json 
-import logging 
-from google.cloud import storage, bigquery
-import io
-import zipfile
-import sys  
-import pandas as pd
-from google.cloud import storage, bigquery
-import logging
-import numpy as np
-import datetime
-import sys
-from google.api_core.exceptions import NotFound
-from io import StringIO 
-from typing import List, Optional
 
 ############################################ Configurations ############################################
 
