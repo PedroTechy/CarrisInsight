@@ -64,6 +64,8 @@ This project is organized into three main folders, each corresponding to a key c
 - [Python Client for Google Cloud Storage - Snippets](https://github.com/googleapis/python-storage/tree/main/samples/snippets)
    - How to upload into GCS - [storage_upload_file.py](https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py)
 
+---
+
 # Project Setup Guide
 
 ## Prerequisites
