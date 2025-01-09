@@ -6,6 +6,7 @@ import numpy as np
 import datetime
 import sys
 from google.api_core.exceptions import NotFound
+from io import StringIO
 # Configuration variables
 
 logging.basicConfig(level=logging.INFO,  # Set the default logging level
@@ -13,10 +14,10 @@ logging.basicConfig(level=logging.INFO,  # Set the default logging level
                     handlers=[logging.StreamHandler()])  # Output to stdout (default)
 
 BUCKET_NAME = 'edit-data-eng-project-group3'  # Replace with your bucket name
-SOURCE_JSON_FILE = ''  # Path to the JSON file in the bucket
+SOURCE_FILE = 'calendar_dates.csv'  # Path to the JSON file in the bucket
 BIGQUERY_PROJECT = 'data-eng-dev-437916'  # Replace with your project ID
 BIGQUERY_DATASET = 'data_eng_project_group3'  # Replace with your BigQuery dataset name
-BIGQUERY_TABLE = ''  # Replace with your BigQuery table name
+BIGQUERY_TABLE = 'calendar_dates_test'  # Replace with your BigQuery table name
 ##  Util functions
 def clean_none_list(col):
     if type(col[0]) == list:
@@ -45,26 +46,35 @@ def restore_unhashable_types(content):
 
 
 #processing functions
-def convert_json_to_dataframe(json_content):
+def convert_to_dataframe(content, input_type):
     """Converts JSON content to a clean DataFrame."""
     # Assuming the JSON is an array of records (list of dictionaries)
-    data = json.loads(json_content)
-    df = (
-        pd.DataFrame(data)
-          .apply(clean_none_list, axis=0)
-          )
-    logging.info("Processed to df.")
-    print(df.head())
-    return df
+    if input_type=='json':
+        logging.info("Handling as json file")
+        data = json.loads(content)
+        df = pd.DataFrame(data)
+    elif input_type == 'csv':
+        # Read the CSV data into a pandas DataFrame
+        logging.info("Handling as csv file")
+        csv_buffer = StringIO(content)
+        df = pd.read_csv(csv_buffer)
+    else:
+        logging.error("Make sure you are passing a .json or .csv file")
 
-def read_json_from_gcs(bucket_name: str, source_file_name: str) -> pd.DataFrame:
-    """Reads a JSON file from GCS, converts it to DataFrame."""
+    clean_df = df.apply(clean_none_list, axis=0) 
+    logging.info("Processed to df.")
+    
+    return clean_df
+
+def read_files_from_gcs(bucket_name: str, source_file_name: str) -> pd.DataFrame:
+    """Reads a file from GCS, converts it to DataFrame."""
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_file_name)
-    json_content = blob.download_as_text()
-    # Convert JSON content to DataFrame
-    df = convert_json_to_dataframe(json_content)
+    file_content = blob.download_as_text()
+    file_type=source_file_name.split(".")[-1:][0]
+    # Convert file content to DataFrame
+    df = convert_to_dataframe(file_content ,file_type)
     logging.info("Read json from bucket and converted to DataFrame.")
     return df
 
@@ -123,7 +133,7 @@ def get_diff(client, bucket_df, table_id):
 
 if __name__ == "__main__":
 
-    dataframe = read_json_from_gcs(BUCKET_NAME, SOURCE_JSON_FILE)
+    dataframe = read_files_from_gcs(BUCKET_NAME, SOURCE_FILE)
     load_to_bigquery(dataframe, BIGQUERY_PROJECT, BIGQUERY_DATASET, BIGQUERY_TABLE)
 
     logging.info("Process completed successfully.")

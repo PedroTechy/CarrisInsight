@@ -72,7 +72,7 @@ def extract_and_store_zip_files(file_list):
                         logging.info(f"Received file with len: {len(file_content)}")
 
                     # Sending file to the bucket
-                    bucket_filename= f"{target_filename}.csv"
+                    bucket_filename= f"{target_filename.split(".")[0]}.csv"
                     upload_blob_from_memory(BUCKET_NAME,file_content,bucket_filename)
 
                 else:
