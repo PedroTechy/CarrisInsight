@@ -1,13 +1,24 @@
 # CarrisInsight
-## Data Engineering – Applied Project
+## Data Engineering – Applied Project (Group 3)
 
 ## Project Overview
 This project focuses on creating data pipelines to support a real-time dashboard for monitoring Carris bus positions and related data.
 
-## Project Structure
-* **dbt Models**: Data transformations for BigQuery.
-* **Spark Jobs**: Real-time data processing.
-* **Airflow DAGs**: Batch data workflow orchestration.
+## Project Structure  
+
+This project is organized into three main folders, each corresponding to a key component of the data engineering pipeline. Below is an overview of each folder, along with the associated development branches:  
+
+### `airflow_dags/`  
+- **Branch**: `airflow_development`  
+- Contains DAGs and batch scripts that will be run together within **Apache Airflow** to orchestrate workflows.  
+
+### `dbt_project/`  
+- **Branch**: `dbt_development`  
+- Contains the **dbt (Data Build Tool)** project files, including models, seeds, and configurations for transforming raw data into analytics-ready datasets in **BigQuery**.  
+
+### `spark_jobs/`  
+- **Branch**: `streaming_development`  
+- Contains **pySpark** streaming scripts for real-time data processing and transformation.  
 
 ## Architecture
 
@@ -28,43 +39,30 @@ This project focuses on creating data pipelines to support a real-time dashboard
 * Python
 
 ## Deliverables 
-* Dashbaord mockup
+* Dashboard mockup
 
 ## Optional Features
 * Add extra data sources to enrich output:
    -- weather, traffic, cultural/social events, interest points 
-* 
 
-## Checklist 
-
-### Bucket for dags
- -  https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&invt=Abl7xA&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false
+## Project Resources 
 
 ### Bucket for raw data dump and staging 
- - 
-
-### Bucket for reading streaming data 
- - https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1
+ - [Bucket - Staging](https://console.cloud.google.com/storage/browser/edit-data-eng-project-group3?authuser=2&invt=AbmZ9w&project=data-eng-dev-437916&pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22)))
 
 ### Access to Airflow 
   - [Airflow](https://edit-data-eng.duckdns.org/)
-    - Username - daniel.moraes@̶w̶e̶a̶r̶e̶e̶d̶i̶t̶.̶i̶o̶ (without @weareedit.io)
-    - Password - Given by Gonçalo
-  - [DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
+    - **Username** - daniel.moraes@̶w̶e̶a̶r̶e̶e̶d̶i̶t̶.̶i̶o̶ (without @weareedit.io)
+    - **Password** - Given by Gonçalo
+  - [Bucket - DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
 
-### Access to BigQuery
-  - 
+### Data Extraction
+ - [API Carris](https://github.com/carrismetropolitana/api)
+ - [Bucket - Streaming](https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1) (Not managed by us, only extraction)
 
-
-## Project notes diary
-
-### Day 1 
- - Extract data from API and load in bucket
-      https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py
-
- - Get data from bucket - transform to tabular - load to big query 
-
-
+### Useful Links
+- [Python Client for Google Cloud Storage - Snippets](https://github.com/googleapis/python-storage/tree/main/samples/snippets)
+   - How to upload into GCS - [storage_upload_file.py](https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py)
 
 # Project Setup Guide
 
