@@ -14,10 +14,10 @@ logging.basicConfig(level=logging.INFO,  # Set the default logging level
                     handlers=[logging.StreamHandler()])  # Output to stdout (default)
 
 BUCKET_NAME = 'edit-data-eng-project-group3'  # Replace with your bucket name
-SOURCE_FILE = 'calendar_dates.csv'  # Path to the JSON file in the bucket
+SOURCE_FILE = 'periods.csv'  # Path to the JSON file in the bucket
 BIGQUERY_PROJECT = 'data-eng-dev-437916'  # Replace with your project ID
 BIGQUERY_DATASET = 'data_eng_project_group3'  # Replace with your BigQuery dataset name
-BIGQUERY_TABLE = 'calendar_dates_test'  # Replace with your BigQuery table name
+BIGQUERY_TABLE = 'periods_dates_test'  # Replace with your BigQuery table name
 ##  Util functions
 def clean_none_list(col):
     if type(col[0]) == list:
@@ -103,31 +103,34 @@ def get_diff(client, bucket_df, table_id):
     # Read existing table from BigQuery into a DataFrame
     try:
         existing_df = client.list_rows(table_id).to_dataframe() 
-    except NotFound as error:
-        logging.info("Table does not exist yet, proceeding with sending all data.")
-
-
-    # Find the diff by merging and getting the rows that exist only on bucket_df
-    merged_df = (
-        pd.merge(
-            existing_df.map(unhashable_types_to_text),
-            bucket_df.map(unhashable_types_to_text),
-            on=bucket_df.columns.to_list(),
-            how='right', # important to get values only on second df
-            indicator=True
-            )
+        # Find the diff by merging and getting the rows that exist only on bucket_df
+        merged_df = (
+            pd.merge(
+                existing_df.map(unhashable_types_to_text),
+                bucket_df.map(unhashable_types_to_text),
+                on=bucket_df.columns.to_list(),
+                how='right', # important to get values only on second df
+                indicator=True
+                )
+                )
+            
+        #Restoring the un hashable values
+        upload_df=(
+            merged_df
+            .query('_merge == "right_only"')
+            .drop(columns='_merge')
+            .map(restore_unhashable_types)
             )
         
-    #Restoring the un hashable values
-    upload_df=(
-        merged_df
-        .query('_merge == "right_only"')
-        .drop(columns='_merge')
-        .map(restore_unhashable_types)
-        )
+        logging.info(f"Found {len(upload_df)} new or modified rows to upload.")
+        return upload_df
+    
+    except NotFound as error:
+        logging.info("Table does not exist yet, proceeding with sending all data.")
+        return bucket_df
+
+
    
-    logging.info(f"Found {len(upload_df)} new or modified rows to upload.")
-    return upload_df
 
 
 
