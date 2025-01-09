@@ -101,7 +101,7 @@ pip install -r requirements.txt
 ```
 
 ## Google Cloud Setup
-We also need to have GC SDK installed to connect with the Google Cloude Services platform and BigQuery.
+We also need to have GC SDK installed to connect with the Google Cloud Services platform and BigQuery.
 
 ### Installing Google Cloud SDK
 
@@ -123,9 +123,9 @@ Download the Google Cloud SDK Installer from: [Google Cloud SDK Installer](https
 Run the installer and follow the installation wizard.
 
 Add the SDK to System PATH:
-1. Open **Edit System Envirnomenet Variables**.
+1. Open **Edit System Environment Variables**.
 2. Under **System Variables**, select **Path**.
-3. Add the installation path (typically `C:\Users\YourUsername\AppData\Local\Google\Cloud SDK`).
+3. Add the installation path (typically `C:\Users\YourUsername\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin`).
 
 Verify installation by opening a new command prompt:
 ```sh
