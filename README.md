@@ -4,6 +4,16 @@
 ## Project Overview
 This project focuses on creating data pipelines to support a real-time dashboard for monitoring Carris bus positions and related data.
 
+## Project Architecture
+
+### Streaming Data Pipeline
+* Spark Structured Streaming processes JSON files from the Carris API.
+* Data is stored and processed using Google Cloud Storage (GCS).
+
+### Batch Data Pipeline
+* Apache Airflow orchestrates data extraction and transformation.
+* Raw data is stored in GCS and transformed for BigQuery using dbt.
+
 ## Project Structure  
 
 This project is organized into three main folders, each corresponding to a key component of the data engineering pipeline. Below is an overview of each folder, along with the associated development branches:  
@@ -19,31 +29,6 @@ This project is organized into three main folders, each corresponding to a key c
 ### `spark_jobs/`  
 - **Branch**: `streaming_development`  
 - Contains **pySpark** streaming scripts for real-time data processing and transformation.  
-
-## Architecture
-
-### Streaming Data Pipeline
-* Spark Structured Streaming processes JSON files from the Carris API.
-* Data is stored and processed using Google Cloud Storage (GCS).
-
-### Batch Data Pipeline
-* Apache Airflow orchestrates data extraction and transformation.
-* Raw data is stored in GCS and transformed for BigQuery using dbt.
-
-## Tools and Technologies
-* Google Cloud Storage
-* BigQuery
-* Spark
-* Airflow
-* dbt
-* Python
-
-## Deliverables 
-* Dashboard mockup
-
-## Optional Features
-* Add extra data sources to enrich output:
-   -- weather, traffic, cultural/social events, interest points 
 
 ## Project Resources 
 
@@ -63,6 +48,21 @@ This project is organized into three main folders, each corresponding to a key c
 ### Useful Links
 - [Python Client for Google Cloud Storage - Snippets](https://github.com/googleapis/python-storage/tree/main/samples/snippets)
    - How to upload into GCS - [storage_upload_file.py](https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py)
+ 
+## Tools and Technologies
+* Google Cloud Storage
+* BigQuery
+* Spark
+* Airflow
+* dbt
+* Python
+
+## Deliverables 
+* Dashboard mockup
+
+## Optional Features
+* Add extra data sources to enrich output:
+   -- weather, traffic, cultural/social events, interest points 
 
 ---
 
