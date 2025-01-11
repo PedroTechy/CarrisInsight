@@ -148,9 +148,16 @@ Set up application default credentials and log into your EDIT account:
 gcloud auth application-default login
 ```
 
-### DBT Setup
+## DBT Setup
 
 - [DBT Setup Repo with README](https://github.com/jgnog/edit-de-project-dbt)
+
+Setup the working directory for dbt:
+(Make sure you are in the correct directory - dbt_project)
+![image](https://github.com/user-attachments/assets/9422f03b-ba58-4bf9-a946-42ccdb4c48f0)
+```sh
+export DBT_PROFILES_DIR=.
+```
 
 ----
 
