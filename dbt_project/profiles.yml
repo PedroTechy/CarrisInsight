@@ -1,13 +1,23 @@
 edit_de_project:
+  target: staging
   outputs:
     staging:
-      dataset: de_project_teachers
+      type: bigquery
+      method: oauth
+      project: data-eng-dev-437916
+      dataset: data_eng_project_group3
       job_execution_timeout_seconds: 300
       job_retries: 1
       location: EU
-      method: oauth
       priority: interactive
-      project: data-eng-dev-437916
-      threads: 4
+      threads: 4 # Must be a value of 1 or greater 
+    modeling:
       type: bigquery
-  target: staging
+      method: oauth
+      project: data-eng-dev-437916
+      dataset: data_eng_project_group3
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      location: EU
+      priority: interactive
+      threads: 4 # Must be a value of 1 or greater 

@@ -13,3 +13,157 @@ Runtime Error
 [0m10:10:31.507322 [debug] [MainThread]: Command `dbt deps` failed at 10:10:31.507133 after 0.19 seconds
 [0m10:10:31.507980 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104d18710>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10173bd10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x104ceec10>]}
 [0m10:10:31.508589 [debug] [MainThread]: Flushing usage events
+[0m10:48:31.572853 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105784190>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1057862d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1057a72d0>]}
+
+
+============================== 10:48:31.589744 | 11fb02e6-83d9-49d5-b89c-36a530e5eb56 ==============================
+[0m10:48:31.589744 [info ] [MainThread]: Running with dbt=1.8.7
+[0m10:48:31.591913 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': '/Users/alunos/.dbt/', 'version_check': 'True', 'debug': 'False', 'log_path': 'logs', 'warn_error': 'None', 'fail_fast': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'introspect': 'True', 'invocation_command': 'dbt debug', 'static_parser': 'True', 'target_path': 'None', 'log_format': 'default', 'send_anonymous_usage_stats': 'True'}
+[0m10:48:31.670693 [info ] [MainThread]: dbt version: 1.8.7
+[0m10:48:31.671744 [info ] [MainThread]: python version: 3.11.5
+[0m10:48:31.672570 [info ] [MainThread]: python path: /Users/alunos/anaconda3/bin/python
+[0m10:48:31.673306 [info ] [MainThread]: os info: macOS-10.16-x86_64-i386-64bit
+[0m10:48:31.673969 [info ] [MainThread]: Using profiles dir at /Users/alunos/.dbt/
+[0m10:48:31.674624 [info ] [MainThread]: Using profiles.yml file at /Users/alunos/.dbt/profiles.yml
+[0m10:48:31.675217 [info ] [MainThread]: Using dbt_project.yml file at /Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml
+[0m10:48:31.675837 [info ] [MainThread]: Configuration:
+[0m10:48:31.676896 [info ] [MainThread]:   profiles.yml file [[31mERROR not found[0m]
+[0m10:48:31.678547 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m10:48:31.679205 [info ] [MainThread]: Required dependencies:
+[0m10:48:31.679923 [debug] [MainThread]: Executing "git --help"
+[0m10:48:31.720885 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--super-prefix=<path>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:48:31.722475 [debug] [MainThread]: STDERR: "b''"
+[0m10:48:31.723354 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:48:31.724034 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m10:48:31.725072 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m10:48:31.725853 [info ] [MainThread]: dbt looked for a profiles.yml file in /Users/alunos/.dbt/profiles.yml, but did
+not find one. For more information on configuring your profile, consult the
+documentation:
+
+https://docs.getdbt.com/docs/configure-your-profile
+
+
+[0m10:48:31.726492 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml> not found
+
+[0m10:48:31.732759 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_wall_clock_time": 0.29778898, "process_user_time": 2.637287, "process_kernel_time": 0.758936, "process_mem_max_rss": "90750976", "command_success": false, "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m10:48:31.735124 [debug] [MainThread]: Command `dbt debug` failed at 10:48:31.734850 after 0.30 seconds
+[0m10:48:31.737867 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1020d7ed0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1057c9e50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x102144210>]}
+[0m10:48:31.738783 [debug] [MainThread]: Flushing usage events
+[0m10:49:21.464081 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1086c0910>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1086c3d90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1086ed090>]}
+
+
+============================== 10:49:21.475613 | 03213eeb-45c3-473e-9192-f1f3df75b398 ==============================
+[0m10:49:21.475613 [info ] [MainThread]: Running with dbt=1.8.7
+[0m10:49:21.477149 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': './dbt_project', 'version_check': 'True', 'warn_error': 'None', 'log_path': 'logs', 'debug': 'False', 'fail_fast': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'invocation_command': 'dbt debug', 'static_parser': 'True', 'introspect': 'True', 'target_path': 'None', 'log_format': 'default', 'send_anonymous_usage_stats': 'True'}
+[0m10:49:21.539402 [info ] [MainThread]: dbt version: 1.8.7
+[0m10:49:21.540626 [info ] [MainThread]: python version: 3.11.5
+[0m10:49:21.541685 [info ] [MainThread]: python path: /Users/alunos/anaconda3/bin/python
+[0m10:49:21.542551 [info ] [MainThread]: os info: macOS-10.16-x86_64-i386-64bit
+[0m10:49:21.554758 [info ] [MainThread]: Error importing adapter: No module named 'dbt.adapters.bigquery'
+[0m10:49:21.556027 [info ] [MainThread]: Using profiles dir at ./dbt_project
+[0m10:49:21.556868 [info ] [MainThread]: Using profiles.yml file at ./dbt_project/profiles.yml
+[0m10:49:21.558134 [info ] [MainThread]: Using dbt_project.yml file at /Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml
+[0m10:49:21.559574 [info ] [MainThread]: Configuration:
+[0m10:49:21.561582 [info ] [MainThread]:   profiles.yml file [[31mERROR invalid[0m]
+[0m10:49:21.565476 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m10:49:21.566699 [info ] [MainThread]: Required dependencies:
+[0m10:49:21.567586 [debug] [MainThread]: Executing "git --help"
+[0m10:49:21.612968 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--super-prefix=<path>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:49:21.615199 [debug] [MainThread]: STDERR: "b''"
+[0m10:49:21.615938 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:49:21.616676 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m10:49:21.617448 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m10:49:21.618042 [info ] [MainThread]: Could not load dbt_project.yml
+Profile loading failed for the following reason:
+Runtime Error
+  Credentials in profile "edit_de_project", target "staging" invalid: Runtime Error
+    Could not find adapter type bigquery!
+
+
+[0m10:49:21.618674 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml> not found
+
+[0m10:49:21.622365 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_wall_clock_time": 0.26295164, "process_user_time": 1.889803, "process_kernel_time": 0.283253, "process_mem_max_rss": "90976256", "command_success": false, "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m10:49:21.626289 [debug] [MainThread]: Command `dbt debug` failed at 10:49:21.626034 after 0.27 seconds
+[0m10:49:21.627269 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1086cfe90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105113f90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1086ece50>]}
+[0m10:49:21.628025 [debug] [MainThread]: Flushing usage events
+[0m10:52:31.894115 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10593b990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105964f50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105965a50>]}
+
+
+============================== 10:52:31.905463 | 487b69df-fdf5-4350-914a-9b5a41f3d963 ==============================
+[0m10:52:31.905463 [info ] [MainThread]: Running with dbt=1.8.7
+[0m10:52:31.906786 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'fail_fast': 'False', 'log_path': 'logs', 'profiles_dir': './dbt_project', 'debug': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'static_parser': 'True', 'log_format': 'default', 'invocation_command': 'dbt debug', 'target_path': 'None', 'introspect': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m10:52:31.968530 [info ] [MainThread]: dbt version: 1.8.7
+[0m10:52:31.969524 [info ] [MainThread]: python version: 3.11.5
+[0m10:52:31.970459 [info ] [MainThread]: python path: /Users/alunos/anaconda3/bin/python
+[0m10:52:31.971297 [info ] [MainThread]: os info: macOS-10.16-x86_64-i386-64bit
+[0m10:52:31.981391 [info ] [MainThread]: Error importing adapter: No module named 'dbt.adapters.bigquery'
+[0m10:52:31.983925 [info ] [MainThread]: Using profiles dir at ./dbt_project
+[0m10:52:31.986358 [info ] [MainThread]: Using profiles.yml file at ./dbt_project/profiles.yml
+[0m10:52:31.987884 [info ] [MainThread]: Using dbt_project.yml file at /Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml
+[0m10:52:31.988864 [info ] [MainThread]: Configuration:
+[0m10:52:31.989461 [info ] [MainThread]:   profiles.yml file [[31mERROR invalid[0m]
+[0m10:52:31.990101 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m10:52:31.990683 [info ] [MainThread]: Required dependencies:
+[0m10:52:31.991334 [debug] [MainThread]: Executing "git --help"
+[0m10:52:32.041189 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--super-prefix=<path>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m10:52:32.043155 [debug] [MainThread]: STDERR: "b''"
+[0m10:52:32.044326 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m10:52:32.045315 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m10:52:32.046123 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m10:52:32.046725 [info ] [MainThread]: Could not load dbt_project.yml
+Profile loading failed for the following reason:
+Runtime Error
+  Credentials in profile "edit_de_project", target "staging" invalid: Runtime Error
+    Could not find adapter type bigquery!
+
+
+[0m10:52:32.047343 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml> not found
+
+[0m10:52:32.052717 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_wall_clock_time": 0.2650175, "process_user_time": 2.252172, "process_kernel_time": 0.466614, "process_mem_max_rss": "91279360", "command_success": false, "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m10:52:32.054102 [debug] [MainThread]: Command `dbt debug` failed at 10:52:32.053841 after 0.27 seconds
+[0m10:52:32.055146 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x105967390>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x102393fd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10593a590>]}
+[0m10:52:32.055996 [debug] [MainThread]: Flushing usage events
+[0m11:04:22.867562 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1069bb590>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106a30890>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106a31390>]}
+
+
+============================== 11:04:22.885500 | c45e701e-d246-4df9-aa3c-ca6e59876d4d ==============================
+[0m11:04:22.885500 [info ] [MainThread]: Running with dbt=1.8.7
+[0m11:04:22.887947 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'fail_fast': 'False', 'debug': 'False', 'log_path': 'logs', 'version_check': 'True', 'profiles_dir': './dbt_project', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'introspect': 'True', 'invocation_command': 'dbt debug --profile edit_de_project --target staging', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'send_anonymous_usage_stats': 'True'}
+[0m11:04:22.957301 [info ] [MainThread]: dbt version: 1.8.7
+[0m11:04:22.958364 [info ] [MainThread]: python version: 3.11.5
+[0m11:04:22.959427 [info ] [MainThread]: python path: /Users/alunos/anaconda3/bin/python
+[0m11:04:22.960336 [info ] [MainThread]: os info: macOS-10.16-x86_64-i386-64bit
+[0m11:04:22.969273 [info ] [MainThread]: Error importing adapter: No module named 'dbt.adapters.bigquery'
+[0m11:04:22.970333 [info ] [MainThread]: Using profiles dir at ./dbt_project
+[0m11:04:22.971349 [info ] [MainThread]: Using profiles.yml file at ./dbt_project/profiles.yml
+[0m11:04:22.972000 [info ] [MainThread]: Using dbt_project.yml file at /Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml
+[0m11:04:22.972645 [info ] [MainThread]: Configuration:
+[0m11:04:22.973256 [info ] [MainThread]:   profiles.yml file [[31mERROR invalid[0m]
+[0m11:04:22.973863 [info ] [MainThread]:   dbt_project.yml file [[31mERROR not found[0m]
+[0m11:04:22.974452 [info ] [MainThread]: Required dependencies:
+[0m11:04:22.975627 [debug] [MainThread]: Executing "git --help"
+[0m11:04:23.015603 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--super-prefix=<path>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m11:04:23.017532 [debug] [MainThread]: STDERR: "b''"
+[0m11:04:23.018199 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m11:04:23.018926 [info ] [MainThread]: Connection test skipped since no profile was found
+[0m11:04:23.019908 [info ] [MainThread]: [31m2 checks failed:[0m
+[0m11:04:23.020522 [info ] [MainThread]: Profile loading failed for the following reason:
+Runtime Error
+  Credentials in profile "edit_de_project", target "staging" invalid: Runtime Error
+    Could not find adapter type bigquery!
+
+
+[0m11:04:23.021140 [info ] [MainThread]: Project loading failed for the following reason:
+ project path </Users/alunos/Documents/final-project/CarrisInsight/dbt_project.yml> not found
+
+[0m11:04:23.026792 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_wall_clock_time": 0.27281642, "process_user_time": 1.833677, "process_kernel_time": 0.258032, "process_mem_max_rss": "90718208", "command_success": false, "process_in_blocks": "0", "process_out_blocks": "0"}
+[0m11:04:23.028271 [debug] [MainThread]: Command `dbt debug` failed at 11:04:23.028018 after 0.28 seconds
+[0m11:04:23.029258 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106a415d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x103368310>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x106a30d90>]}
+[0m11:04:23.033231 [debug] [MainThread]: Flushing usage events
