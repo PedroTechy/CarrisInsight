@@ -44,10 +44,11 @@ This project is organized into three main folders, each corresponding to a key c
 ### BigQuery
  - [data_eng_project_group3](https://console.cloud.google.com/bigquery?referrer=search&authuser=0&inv=1&invt=AbmjTA&project=data-eng-dev-437916&ws=!1m4!1m3!3m2!1sdata-eng-dev-437916!2sdata_eng_project_group3)
 
-### Data Extraction
+### Data Extraction Sources
 (Not managed by us, only extraction)
  - [API Carris](https://github.com/carrismetropolitana/api)
  - [Bucket - Streaming](https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1)
+ - [BigQuery - Historical Stop Times](https://console.cloud.google.com/bigquery?referrer=search&authuser=0&inv=1&invt=AbmjmQ&project=data-eng-dev-437916&ws=!1m5!1m4!4m3!1sdata-eng-dev-437916!2sde_project_teachers!3shistorical_stop_times)
 
 ### Useful Links
 - [Python Client for Google Cloud Storage - Snippets](https://github.com/googleapis/python-storage/tree/main/samples/snippets)
