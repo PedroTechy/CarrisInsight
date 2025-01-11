@@ -41,19 +41,17 @@ from google.api_core.exceptions import NotFound
 from google.cloud import bigquery, storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 
 ############################################ Configurations ############################################
 
 BASE_API_URL = "https://api.carrismetropolitana.pt/"
-ZIP_FILES = ['calendar_dates.txt', 'trips.txt', 'stop_times.txt', "data.txt", "shapes.txt"] #data, shapes
+ZIP_FILES = ['calendar_dates.txt', 'trips.txt', 'stop_times.txt', "dates.txt", "shapes.txt", "periods.txt"]
 ENDPOINTS = ["municipalities", "stops", "lines", "routes"]
 BUCKET_NAME= "edit-data-eng-project-group3"
 BIGQUERY_PROJECT = 'data-eng-dev-437916'  
 BIGQUERY_DATASET = 'data_eng_project_group3'   
-
-SOURCE_FILE = 'periods.csv'  # Path to the JSON file in the bucket
-BIGQUERY_TABLE = 'periods_dates_test'  # Replace with your BigQuery table name
 ############################################ Configurations ############################################
 
 logging.basicConfig(level=logging.INFO,  # Set the default logging level
@@ -210,7 +208,8 @@ def convert_to_dataframe(content,
     return clean_df
 
 def read_files_from_gcs(bucket_name: str,
-                        source_file_name: str) -> pd.DataFrame:
+                        source_file_name: str,
+                        file_type: str) -> pd.DataFrame:
     """
     Reads a file from GCS and converts it to a pandas DataFrame.
 
@@ -226,9 +225,9 @@ def read_files_from_gcs(bucket_name: str,
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_file_name)
     file_content = blob.download_as_text()
-    file_type=source_file_name.split(".")[-1:][0]
+
     # Convert file content to DataFrame
-    df = convert_to_dataframe(file_content ,file_type)
+    df = convert_to_dataframe(file_content , file_type)
     logging.info("Read json from bucket and converted to DataFrame.")
     return df
 
@@ -314,38 +313,38 @@ def load_dataframe_to_bigquery(dataframe: pd.DataFrame,
     
 # DAG Functions 
 def extract_and_store_json_data(base_url: str,
-                                endpoints_list: list) -> None:
+                                endpoint: str, 
+                                **context) -> None:
     """
-    Fetches data from a list of JSON API endpoints and uploads it to Google Cloud Storage.
+    Fetches data from the API endpoint and uploads it to Google Cloud Storage.
 
     Args:
         base_url (str): The base URL for the API.
-        endpoints_list (list): A list of endpoint paths to fetch data from.
+        endpoint (str): The endpoint path to fetch data from.
 
     Returns:
         None
     """
-    for endpoint in endpoints_list:
-        try:
-            url = f"{base_url}{endpoint}"
-            response = requests.get(url) 
-            
-            if response.status_code == 200: 
-                file_content=response.content
-                logging.info(f"Fetched data from {endpoint}")
-            else:
-                raise Exception(f"Failed to fetch data from {url}. Status code: {response.status_code}")
-                
-            target_filename = f"{endpoint}.json"
-            upload_blob_from_memory(BUCKET_NAME,file_content,target_filename)
-        except:
-            # added a generic exception to catch any error for a specific file without stopping the loop.
-            logging.error(f"Error when trying to handle {target_filename}. File has been skipped")
-            continue
-
+    try:
+        url = f"{base_url}{endpoint}"
+        response = requests.get(url) 
+        
+        if response.status_code == 200: 
+            file_content=response.content
+            logging.info(f"Fetched data from {endpoint}")
+        else:
+            raise Exception(f"Failed to fetch data from {url}. Status code: {response.status_code}")
+        execution_date = context['execution_date'].strftime('%Y-%m-%d')
+        target_file_path = f"raw_data/{execution_date}/{endpoint}.json"
+        upload_blob_from_memory(BUCKET_NAME,file_content,target_file_path)
+    except:
+        # added a generic exception to catch any error for a specific file without stopping the loop.
+        logging.error(f"Error when trying to handle {target_file_path}. File has been skipped")
+          
 def extract_and_store_zip_files(base_url: str,
                                 zip_endpoint: str = "gtfs",
-                                file_list: list = []):
+                                file_list: list = [],
+                                **context):
     """
     Fetches a ZIP file from a specified endpoint, extracts specific files, and uploads them to GCS.
 
@@ -360,7 +359,7 @@ def extract_and_store_zip_files(base_url: str,
     url = f"{base_url}/{zip_endpoint}"
     response = requests.get(url)
 
-    with zipfile.ZipFile(io.BytesIO(response.content)) as zip_ref:
+    with ZipFile(io.BytesIO(response.content)) as zip_ref:
         # List the files in the zip
         zip_file_list = zip_ref.namelist()
         logging.info(f"Files in the zip archive: {zip_file_list}")
@@ -375,8 +374,11 @@ def extract_and_store_zip_files(base_url: str,
                         logging.info(f"Received file with len: {len(file_content)}")
 
                     # Sending file to the bucket
-                    bucket_filename= f"{target_filename.split(".")[0]}.csv"
-                    upload_blob_from_memory(BUCKET_NAME,file_content,bucket_filename)
+                    execution_date = context['execution_date'].strftime('%Y-%m-%d')
+
+                    csv_filen_path = f"raw_data/{execution_date}/{target_filename.split(".")[0]}.csv"
+    
+                    upload_blob_from_memory(BUCKET_NAME,file_content, csv_filen_path)
 
                 else:
                     raise Exception(f"{target_filename} not found in the zip archive.")
@@ -386,9 +388,11 @@ def extract_and_store_zip_files(base_url: str,
                 continue
 
 def load_tables_from_bucket_to_bigquery(bucket_name: str,
-                                      project_id: str,
-                                      dataset_id: str,
-                                      file_names: List[str]):
+                                        project_id: str,
+                                        dataset_id: str,
+                                        filename: str,
+                                        extension_type,
+                                        **context):
     """
     Loads specified files from GCS bucket to BigQuery tables.
     
@@ -401,33 +405,35 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
     Returns:
         None
     """ 
+        
+    execution_date = context['execution_date'].strftime('%Y-%m-%d')       
+    filename_full_path = f"raw_data/{execution_date}/{filename}.{extension_type}"
     
-    for source_file in file_names:
-        logging.info(f"Processing file: {source_file}")
-        
-        # Read file from GCS as dataframe
-        dataframe = read_files_from_gcs(bucket_name, source_file)
-        if dataframe is None:
-            logging.info(f"Couldn't load {source_file} on bucket{bucket_name}, please be sure the file exists. Skipping it.")
-            continue
-            
-        # create table name from file name (remove extension) 
-        table_name, ext = os.path.splitext(source_file)
-        
-        # Load to bigQuery
-        success = load_dataframe_to_bigquery(
-            df=dataframe,
-            project_id=project_id,
-            dataset_id=dataset_id,
-            table_name=table_name
-        ) 
+    logging.info(f"Processing file: {filename_full_path}")
+    
+    # Read file from GCS as dataframe
+    dataframe = read_files_from_gcs(bucket_name, filename_full_path, extension_type)
+    if dataframe is None:
+        logging.info(f"Couldn't load {filename_full_path} on bucket{bucket_name}, please be sure the file exists. Skipping it.")
+        return "Failure"
+
+    # define bigquery table name    
+    table_name = f"raw_{filename}"
+    
+    # Load to bigQuery
+    success = load_dataframe_to_bigquery(
+        dataframe=dataframe,
+        project=project_id,
+        dataset=dataset_id,
+        table=table_name
+    ) 
+    return "Success"
 
 # Define the DAG
 with DAG(
-
     dag_id='extract_and_upload_gcs',
-    start_date=datetime(2025, 1, 9),
-    schedule_interval='@hourly',
+    start_date=datetime(2025, 1, 10),
+    schedule_interval='*/5 * * * *',
     catchup=False,
     default_args={'retries': 1, 'retry_delay': timedelta(minutes=5)}
 ) as dag:
@@ -435,34 +441,43 @@ with DAG(
     tasks = []
 
     # JSON endpoints
-    extract_and_upload_json_task = PythonOperator(
-        task_id='extract_and_store_json_data',
+    extract_stops_and_upload_to_bucket_task = PythonOperator(
+        task_id='extract_stops_and_upload_to_bucket',
         python_callable=extract_and_store_json_data,
-        op_args=[BASE_API_URL, ENDPOINTS],  # pass all endpoints as a list
+        op_args=[BASE_API_URL, "stops"],  
+        provide_context = True
     )
-    tasks.append(extract_and_upload_json_task)
 
-    # Zip file extraction and storage 
-    extract_and_upload_zip_task = PythonOperator(
-        task_id='extract_and_store_zip_files',
-        python_callable=extract_and_store_zip_files,
-        op_args=[BASE_API_URL, "gtfs", ZIP_FILES],  # "gtfs" is the default endpoint that contains the zip
-    )
-    tasks.append(extract_and_upload_zip_task)
-
-    # Add data from GCS to Bigquery 
-    bucket_filenames = get_all_file_names(ENDPOINTS, ZIP_FILES)
-    # Zip file extraction and storage 
-    load_to_bigquery_task = PythonOperator(
-        task_id='load_tables_from_bucket_to_bigquery',
+    load_stops_to_bigquery_task = PythonOperator(
+        task_id='load_stops_to_bigquery',
         python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BASE_API_URL, "gtfs", ZIP_FILES],  # "gtfs" is the default endpoint that contains the zip
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "stops", "json"], 
+        provide_context = True
     ) 
 
-    tasks.append(load_to_bigquery_task)
+    extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
+
+    # Zip file extraction and storage (single extraction to avoid multiple unzips)
+    extract_and_upload_zip_task = PythonOperator(
+        task_id='extract_and_upload_zip',
+        python_callable=extract_and_store_zip_files,
+        op_args=[BASE_API_URL, "gtfs", ZIP_FILES],  # "gtfs" is the default endpoint that contains the zip
+        provide_context = True
+    )
+
+    load_calendar_dates_to_bigquery_task = PythonOperator(
+        task_id='load_calendar_dates_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "calendar_dates", "csv"], 
+        provide_context = True
+    )
+
+    extract_and_upload_zip_task >> load_calendar_dates_to_bigquery_task
+
+    #tasks.append(load_to_bigquery_task)
 
     # usefull to test if each task is doing what is should, but the commented line should be the final version 
-    for i in range(len(tasks) - 1):
-        tasks[i] >> tasks[i + 1]
+    #for i in range(len(tasks) - 1):
+    #    tasks[i] >> tasks[i + 1] """
 
-    #extract_and_upload_json_task >> extract_and_upload_zip_task >> load_to_bigquery_task
+    #extract_and_upload_json_task >> extract_and_upload_zip_task >> load_to_bigquery_task 
