@@ -41,6 +41,9 @@ This project is organized into three main folders, each corresponding to a key c
     - **Password** - Given by Gonçalo
   - [Bucket - DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
 
+### BigQuery
+ - [data_eng_project_group3](https://console.cloud.google.com/bigquery?referrer=search&authuser=0&inv=1&invt=AbmjTA&project=data-eng-dev-437916&ws=!1m4!1m3!3m2!1sdata-eng-dev-437916!2sdata_eng_project_group3)
+
 ### Data Extraction
  - [API Carris](https://github.com/carrismetropolitana/api)
  - [Bucket - Streaming](https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1) (Not managed by us, only extraction)
