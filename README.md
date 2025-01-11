@@ -45,8 +45,9 @@ This project is organized into three main folders, each corresponding to a key c
  - [data_eng_project_group3](https://console.cloud.google.com/bigquery?referrer=search&authuser=0&inv=1&invt=AbmjTA&project=data-eng-dev-437916&ws=!1m4!1m3!3m2!1sdata-eng-dev-437916!2sdata_eng_project_group3)
 
 ### Data Extraction
+(Not managed by us, only extraction)
  - [API Carris](https://github.com/carrismetropolitana/api)
- - [Bucket - Streaming](https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1) (Not managed by us, only extraction)
+ - [Bucket - Streaming](https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1)
 
 ### Useful Links
 - [Python Client for Google Cloud Storage - Snippets](https://github.com/googleapis/python-storage/tree/main/samples/snippets)
@@ -146,7 +147,11 @@ Set up application default credentials and log into your EDIT account:
 ```sh
 gcloud auth application-default login
 ```
-  
+
+### DBT Setup
+
+- [DBT Setup Repo with README](https://github.com/jgnog/edit-de-project-dbt)
+
 ----
 
 Run python script 
