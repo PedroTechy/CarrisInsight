@@ -1,0 +1,13 @@
+edit_de_project:
+  outputs:
+    staging:
+      dataset: de_project_teachers
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      location: EU
+      method: oauth
+      priority: interactive
+      project: data-eng-dev-437916
+      threads: 4
+      type: bigquery
+  target: staging

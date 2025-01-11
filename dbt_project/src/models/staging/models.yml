@@ -1,0 +1,9 @@
+models:
+  - name: test_model
+    description: Just testing
+    columns:
+      - name: one
+        description: just one
+        tests:
+          - not_null
+          - unique
