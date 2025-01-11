@@ -47,7 +47,7 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 ############################################ Configurations ############################################
 
 BASE_API_URL = "https://api.carrismetropolitana.pt/"
-ZIP_FILES = ['calendar_dates.txt', 'trips.txt', 'stop_times.txt', "dates.txt", "shapes.txt", "periods.txt"]
+ZIP_FILES = ['calendar_dates.txt', 'trips.txt', "dates.txt", "shapes.txt", "periods.txt"]
 ENDPOINTS = ["municipalities", "stops", "lines", "routes"]
 BUCKET_NAME= "edit-data-eng-project-group3"
 BIGQUERY_PROJECT = 'data-eng-dev-437916'  
@@ -433,14 +433,13 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
 with DAG(
     dag_id='extract_and_upload_gcs',
     start_date=datetime(2025, 1, 10),
-    schedule_interval='*/5 * * * *',
+    schedule_interval='@daily',
     catchup=False,
-    default_args={'retries': 1, 'retry_delay': timedelta(minutes=5)}
+    default_args={'retries': 0}
 ) as dag:
 
     tasks = []
 
-    # JSON endpoints
     extract_stops_and_upload_to_bucket_task = PythonOperator(
         task_id='extract_stops_and_upload_to_bucket',
         python_callable=extract_and_store_json_data,
@@ -455,7 +454,47 @@ with DAG(
         provide_context = True
     ) 
 
-    extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
+    extract_municipalities_and_upload_to_bucket_task = PythonOperator(
+        task_id='extract_municipalities_and_upload_to_bucket',
+        python_callable=extract_and_store_json_data,
+        op_args=[BASE_API_URL, "municipalities"],  
+        provide_context = True
+    )
+
+    load_municipalities_to_bigquery_task = PythonOperator(
+        task_id='load_municipalities_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "municipalities", "json"], 
+        provide_context = True
+    ) 
+
+    extract_lines_and_upload_to_bucket_task = PythonOperator(
+        task_id='extract_lines_and_upload_to_bucket',
+        python_callable=extract_and_store_json_data,
+        op_args=[BASE_API_URL, "lines"],  
+        provide_context = True
+    )
+
+    load_lines_to_bigquery_task = PythonOperator(
+        task_id='load_lines_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "lines", "json"], 
+        provide_context = True
+    ) 
+
+    extract_routes_and_upload_to_bucket_task = PythonOperator(
+        task_id='extract_routes_and_upload_to_bucket',
+        python_callable=extract_and_store_json_data,
+        op_args=[BASE_API_URL, "routes"],  
+        provide_context = True
+    )
+
+    load_routes_to_bigquery_task = PythonOperator(
+        task_id='load_routes_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "routes", "json"], 
+        provide_context = True
+    ) 
 
     # Zip file extraction and storage (single extraction to avoid multiple unzips)
     extract_and_upload_zip_task = PythonOperator(
@@ -472,12 +511,42 @@ with DAG(
         provide_context = True
     )
 
-    extract_and_upload_zip_task >> load_calendar_dates_to_bigquery_task
+    load_trips_to_bigquery_task = PythonOperator(
+        task_id='load_trips_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "trips", "csv"], 
+        provide_context = True
+    )
 
-    #tasks.append(load_to_bigquery_task)
+    load_dates_to_bigquery_task = PythonOperator(
+        task_id='load_dates_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "dates", "csv"], 
+        provide_context = True
+    )
 
-    # usefull to test if each task is doing what is should, but the commented line should be the final version 
-    #for i in range(len(tasks) - 1):
-    #    tasks[i] >> tasks[i + 1] """
+    load_shapes_to_bigquery_task = PythonOperator(
+        task_id='load_shapes_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "shapes", "csv"], 
+        provide_context = True
+    )
 
-    #extract_and_upload_json_task >> extract_and_upload_zip_task >> load_to_bigquery_task 
+    load_periods_bigquery_task = PythonOperator(
+        task_id='load_periods_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "periods", "csv"], 
+        provide_context = True
+    )
+
+    
+    extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
+
+    extract_municipalities_and_upload_to_bucket_task >> load_municipalities_to_bigquery_task
+
+    extract_lines_and_upload_to_bucket_task >> load_lines_to_bigquery_task
+
+    extract_routes_and_upload_to_bucket_task >> load_routes_to_bigquery_task
+
+    extract_and_upload_zip_task >>  [load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
+
