@@ -4,3 +4,4 @@
 *.csv
 *.txt
 __pycache__
+/.project
