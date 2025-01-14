@@ -30,7 +30,7 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import StringIO
 from typing import List, Optional
 from zipfile import ZipFile
@@ -47,11 +47,14 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 ############################################ Configurations ############################################
 
 BASE_API_URL = "https://api.carrismetropolitana.pt/"
-ZIP_FILES = ['calendar_dates.txt', 'trips.txt', "dates.txt", "shapes.txt", "periods.txt"]
+ZIP_FILES = ['stop_times.txt','calendar_dates.txt', 'trips.txt', "dates.txt", "shapes.txt", "periods.txt"]
 ENDPOINTS = ["municipalities", "stops", "lines", "routes"]
 BUCKET_NAME= "edit-data-eng-project-group3"
 BIGQUERY_PROJECT = 'data-eng-dev-437916'  
 BIGQUERY_DATASET = 'data_eng_project_group3'   
+MAX_TABLE_CREATED_HOURS= 23 #used to drop large tables before starting imports
+MAX_TABLE_COMPARE_SIZE=300000
+MAX_FILE_CHUNK_SIZE=150000000
 ############################################ Configurations ############################################
 
 logging.basicConfig(level=logging.INFO,  # Set the default logging level
@@ -60,30 +63,17 @@ logging.basicConfig(level=logging.INFO,  # Set the default logging level
 
 # Utils functions 
 
-# ToDo: review this func with team, not sure if there is a smarter way like going throw all the files in the bucket (however we may not want/need all)
-# dont know, check with them
 def get_all_file_names(endpoints: List[str], zip_files: List[str]) -> List[str]:
     """
     Generates a list of filenames by combining endpoints and zip files with appropriate extensions.
-    
     Args:
         endpoints (List[str]): List of endpoint names without extensions (e.g., ['users', 'products']).
-            Each endpoint will have '.json' appended.
-        zip_files (List[str]): List of zip file names with '.txt' extension (e.g., ['data.txt', 'info.txt']).
-            Each .txt extension will be replaced with '.csv'.
-    
+        zip_files (List[str]): List of zip file names with a '.txt' extension (e.g., ['data.txt', 'info.txt']).
     Returns:
-        List[str]: Combined list of filenames with proper extensions:
-            - Endpoints will have '.json' extension
-            - Zip files will have '.txt' replaced with '.csv'
-    
-    Examples:
-        >>> get_all_file_names(['users', 'orders'], ['data.txt', 'logs.txt'])
-        ['data.csv', 'logs.csv', 'users.json', 'orders.json']
-        
-    Notes:
-        - Input zip_files must have '.txt' extension
-        - Function will maintain the original filename without extension
+        List[str]: Combined list of filenames with the following transformations.
+           
+    Raises:
+        ValueError: If any file in the `zip_files` list does not end with the '.txt' extension.
     """
     # Initialize empty list for all filenames
     filename_list = []
@@ -178,7 +168,8 @@ def restore_unhashable_types(content: str):
         return content
 
 def convert_to_dataframe(content,
-                        input_type: str) -> pd.DataFrame:
+                        input_type: str,
+                        dtype:str =None) -> pd.DataFrame:
     """
     Converts JSON content to a clean DataFrame. Assumes JSON as
     an array of records (list of dictionaries)
@@ -186,19 +177,20 @@ def convert_to_dataframe(content,
     Args:
         content : The file content.
         input_type (str): The file type ('json' or 'csv').
-
+        dtype (str) None: Can be used to bind specific columns to datatypes in pandas. Default is none. 
     Returns:
         pd.DataFrame: A processed pandas DataFrame.
     """   
     if input_type=='json':
         logging.info("Handling as json file")
-        data = json.loads(content)
+        data = json.loads(content, dtype=dtype)
         df = pd.DataFrame(data)
     elif input_type == 'csv':
         # Read the CSV data into a pandas DataFrame
+
         logging.info("Handling as csv file")
         csv_buffer = StringIO(content)
-        df = pd.read_csv(csv_buffer)
+        df = pd.read_csv(csv_buffer, dtype=dtype)
     else:
         logging.error("Make sure you are passing a .json or .csv file")
 
@@ -207,9 +199,16 @@ def convert_to_dataframe(content,
     
     return clean_df
 
-def read_files_from_gcs(bucket_name: str,
-                        source_file_name: str,
-                        file_type: str) -> pd.DataFrame:
+def find_file_replicas(bucket_name, filename, filepath):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob_list = [blob for blob in bucket.list_blobs(prefix=filepath) if filename in blob.name]
+    logging.info(f"Found blobs: {blob_list}")
+    return blob_list
+
+def read_files_from_gcs(blob,
+                        file_type: str,
+                        dtype:str=None) -> pd.DataFrame:
     """
     Reads a file from GCS and converts it to a pandas DataFrame.
 
@@ -221,31 +220,39 @@ def read_files_from_gcs(bucket_name: str,
         pd.DataFrame: The DataFrame representation of the file content.
     """
 
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(source_file_name)
     file_content = blob.download_as_text()
 
     # Convert file content to DataFrame
-    df = convert_to_dataframe(file_content , file_type)
-    logging.info("Read json from bucket and converted to DataFrame.")
+    df = convert_to_dataframe(file_content , file_type, dtype=dtype)
+    logging.info("Read file from bucket and converted to DataFrame.")
     return df
 
 def get_diff(client,
              bucket_df: pd.DataFrame,
              table_id: str) -> pd.DataFrame:
     """
-    Compares a DataFrame with an existing BigQuery table and returns the difference.
+    Compares a DataFrame with an existing BigQuery table and returns the new or modified rows.
 
     Args:
-        client: The BigQuery client.
-        bucket_df (pd.DataFrame): The DataFrame representing new data.
-        table_id (str): The BigQuery table ID.
+        client: The BigQuery client to interact with the database.
+        bucket_df (pd.DataFrame): The DataFrame containing new or modified data to compare.
+        table_id (str): The ID of the BigQuery table to compare against.
 
     Returns:
-        pd.DataFrame: A DataFrame containing new or modified rows.
+        pd.DataFrame: A DataFrame containing new or modified rows from `bucket_df` that are not in the BigQuery table.
+
+    Notes:
+        - If the BigQuery table is too large (over 300,000 rows) and older than 23hours, the function will drop the existing table and load new data.
+        - If the BigQuery table is too large (over 300,000 rows) and younger than 23hours, the function will append all new data.
+        - If the table does not exist yet, all data in `bucket_df` will be returned.
+        - Rows are compared based on exact matches of column values; unhashable types are handled before comparison.
     """
     try:
+        iter_row = client.query(f"select count(*) from {table_id}").result()
+        table_lines = [i for i in iter_row][0][0]
+
+        assert table_lines < MAX_TABLE_COMPARE_SIZE, "Table too large to compare. Will drop existing and create a new one."
+
         existing_df = client.list_rows(table_id).to_dataframe() 
         # Find the diff by merging and getting the rows that exist only on bucket_df
         merged_df = (
@@ -272,11 +279,23 @@ def get_diff(client,
     except NotFound as error:
         logging.info("Table does not exist yet, proceeding with sending all data.")
         return bucket_df
+    except AssertionError:
+        logging.info("Checking table created age")
+        table = client.get_table(table_id)
+        now_minus_23_hours = (datetime.now(tz=timezone.utc) - timedelta(hours=MAX_TABLE_CREATED_HOURS))
+        if table.created < now_minus_23_hours:
+            # Only added this logic to prevent creating a "forever appending table"
+            logging.warning(f"Found table older that 23 hours: {table.created} Dropping {table_id} to load new data")
+            iter_row = client.query(f"DROP TABLE {table_id}").result()
+        else:
+            logging.info('Appending to existing query without checking for duplicates.')
+        return bucket_df
+
 
 def load_dataframe_to_bigquery(dataframe: pd.DataFrame,
                                project: str,
                                dataset: str,
-                               table: str):
+                               table: str) -> bool:
     """
     Loads a pandas DataFrame into a BigQuery table. If the table exists, only new rows are added.
 
@@ -368,17 +387,34 @@ def extract_and_store_zip_files(base_url: str,
             try:
                 if target_filename in zip_file_list:
                     with zip_ref.open(target_filename) as target_file:
-                        # Example: Read the file and parse its content
-                        file_content = target_file.read().decode('utf-8')  # Decode the bytes to string if it's a text file
-                        logging.info(f"Content of {target_filename}:\n")
-                        logging.info(f"Received file with len: {len(file_content)}")
+                        logging.info(f"Reading {target_filename} in chunks...")
 
-                    # Sending file to the bucket
-                    execution_date = context['execution_date'].strftime('%Y-%m-%d')
-
-                    csv_filen_path = f"raw_data/{execution_date}/{target_filename.split(".")[0]}.csv"
-    
-                    upload_blob_from_memory(BUCKET_NAME,file_content, csv_filen_path)
+                        # Initialize the chunk reader (using BufferedReader for better performance)
+                        buffer = io.BufferedReader(target_file)
+            
+                        # Process file in chunks
+                        total_bytes_read = 0
+                        # Saving the header so it can be prepended to all chunks creating valid csv
+                        header = buffer.readlines(1)[0].decode('utf-8')
+                        iter_count = 0
+                        while True: # Get a better apporach here than while true!!
+                            
+                            chunk = buffer.readlines(MAX_FILE_CHUNK_SIZE)  # Consume chunk of data
+                            if not chunk:
+                                break  # EOF reached
+                            
+                            total_bytes_read += len(chunk)
+                            
+                            logging.info(f"Size of {iter_count} chunk {sys.getsizeof(chunk)}:\n")
+                            string_content= list(map(lambda x: x.decode('utf-8'),chunk))
+                            file_content = header+ "".join(string_content)
+                            bucket_filename= f"{target_filename.split(".")[0]}{iter_count if iter_count != 0 else ''}.csv"
+                            bucket_filepath=f"{context['execution_date'].strftime('%Y-%m-%d')}/{bucket_filename}" 
+                            upload_blob_from_memory(BUCKET_NAME, file_content, bucket_filepath)
+                            logging.info(f"Saved {bucket_filename} with {len(chunk)} bytes.")
+                            iter_count+=1
+                            
+                        logging.info(f"Total bytes read from {target_filename}: {total_bytes_read}")
 
                 else:
                     raise Exception(f"{target_filename} not found in the zip archive.")
@@ -387,47 +423,76 @@ def extract_and_store_zip_files(base_url: str,
                 logging.error(f"Error when trying to handle {target_filename}. File has been skipped")
                 continue
 
+def get_table_dtypes(table_name: str) -> dict:
+    """
+    Returns the specific data types for columns in a BigQuery table based on the table name.
+
+    Args:
+        table_name (str): The name of the table to get data types for.
+
+    Returns:
+        dict or None: A dictionary with column names as keys and data types as values,
+                      or None if no specific types are needed for the table.
+    """
+
+    if "stop_times" in table_name:
+        return {'shape_dist_traveled': 'float64'}
+    # Add more table-specific logic here as needed
+    else:
+
+        return None
+
 def load_tables_from_bucket_to_bigquery(bucket_name: str,
                                         project_id: str,
                                         dataset_id: str,
                                         filename: str,
                                         extension_type,
-                                        **context):
+                                        **context) -> bool:
     """
-    Loads specified files from GCS bucket to BigQuery tables.
-    
+    Loads a file from a GCS bucket into a BigQuery table.
+
     Args:
-        bucket_name (str): Name of the GCS bucket
-        project_id (str): GCP project ID
-        dataset_id (str): BigQuery dataset ID
-        file_names List(str): List of file names to process
-    
+        bucket_name (str): GCS bucket name.
+        project_id (str): GCP project ID.
+        dataset_id (str): BigQuery dataset ID.
+        filename (str): Name of the file to load.
+        extension_type (str): File extension (e.g., 'csv', 'json').
+        context (dict): Airflow context containing metadata like execution date.
+
     Returns:
-        None
-    """ 
+        bool: True if data is loaded, False if an error occurs.
+
+    Notes:
+        - Dynamically generates the file path based on the `execution_date`.
+        - Handles specific files (e.g., 'stop_times') with custom data types.
+    """
         
     execution_date = context['execution_date'].strftime('%Y-%m-%d')       
-    filename_full_path = f"raw_data/{execution_date}/{filename}.{extension_type}"
+    file_path = f"raw_data/{execution_date}/"
     
-    logging.info(f"Processing file: {filename_full_path}")
-    
-    # Read file from GCS as dataframe
-    dataframe = read_files_from_gcs(bucket_name, filename_full_path, extension_type)
-    if dataframe is None:
-        logging.info(f"Couldn't load {filename_full_path} on bucket{bucket_name}, please be sure the file exists. Skipping it.")
-        return "Failure"
+    logging.info(f"Processing file: {filename}")
 
-    # define bigquery table name    
-    table_name = f"raw_{filename}"
+    matching_blobs = find_file_replicas(bucket_name, filename, file_path)
+
+    for blob in matching_blobs:
+
+        dtype = get_table_dtypes(blob.name)
+        dataframe = read_files_from_gcs(blob, extension_type, dtype=dtype)
+        if dataframe is None:
+            logging.info(f"Couldn't load {blob.name} on bucket{bucket_name}, please be sure the file exists. Skipping it.")
+            return "Failure"
+
+        # define bigquery table name    
+        table_name = f"raw_{filename}"
     
-    # Load to bigQuery
-    success = load_dataframe_to_bigquery(
-        dataframe=dataframe,
-        project=project_id,
-        dataset=dataset_id,
-        table=table_name
-    ) 
-    return "Success"
+        # Load to bigQuery
+        success = load_dataframe_to_bigquery(
+            dataframe=dataframe,
+            project=project_id,
+            dataset=dataset_id,
+            table=table_name
+        ) 
+    return success
 
 # Define the DAG
 with DAG(

@@ -7,6 +7,11 @@ from google.cloud import storage
 import logging
 import sys
   
+###########
+########## FILE NOT UP TO DATE
+#########
+
+
 BASE_API_URL = "https://api.carrismetropolitana.pt/" 
 ZIP_FILES = ['calendar_dates.txt', 'trips.txt', 'stop_times.txt']
 ENDPOINTS = ["municipalities", "stops", "lines", "routes"]
