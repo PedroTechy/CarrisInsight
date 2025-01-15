@@ -4,26 +4,10 @@ Carris Data Pipeline DAG
 
 An Airflow DAG that extracts data from the Carris API, stores it in Google Cloud Storage (GCS),
 and loads it into BigQuery as tables. This pipeline handles both JSON and ZIP file formats,
-performing the minimum necessary transformations during the process.
+performing the minimum necessary transformations during the process. Also copies the historical_stop_times
+from teachers BigQuery.
 
-Tasks
------
-1. extract_and_store_json_data
-    - Extracts data from specified API endpoints
-    - Transforms response into JSON format
-    - Uploads resulting files to GCS with .json extension
-
-2. extract_and_upload_zip_task
-    - Downloads and processes ZIP files from API
-    - Extracts relevant .txt files from the ZIP archives
-    - Converts data to CSV format
-    - Uploads processed files to GCS with .csv extension
-
-3. load_to_bigquery_task
-    - Creates or updates BigQuery tables based on GCS content
-    - Performs incremental loading of new data
-    - Preprocesses data for consistency (avoid errors when creating tables)
-
+=======================
 """
 import io
 import json
@@ -62,35 +46,6 @@ logging.basicConfig(level=logging.INFO,  # Set the default logging level
                     handlers=[logging.StreamHandler()])  # Output to stdout (default)
 
 # Utils functions 
-
-def get_all_file_names(endpoints: List[str], zip_files: List[str]) -> List[str]:
-    """
-    Generates a list of filenames by combining endpoints and zip files with appropriate extensions.
-    Args:
-        endpoints (List[str]): List of endpoint names without extensions (e.g., ['users', 'products']).
-        zip_files (List[str]): List of zip file names with a '.txt' extension (e.g., ['data.txt', 'info.txt']).
-    Returns:
-        List[str]: Combined list of filenames with the following transformations.
-           
-    Raises:
-        ValueError: If any file in the `zip_files` list does not end with the '.txt' extension.
-    """
-    # Initialize empty list for all filenames
-    filename_list = []
-    
-    # Process zip files: replace .txt with .csv
-    for zip_file in zip_files:
-        if zip_file.endswith('.txt'):
-            csv_filename = zip_file.replace('.txt', '.csv')
-            filename_list.append(csv_filename)
-        else:
-            raise ValueError(f"Zip file {zip_file} must have '.txt' extension")
-    
-    # Process endpoints: append .json
-    for endpoint in endpoints:
-        filename_list.append(f"{endpoint}.json")
-    
-    return filename_list
 
 def upload_blob_from_memory(bucket_name: str,
                             contents: str,
@@ -494,16 +449,64 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
         ) 
     return success
 
+def recreate_historical_stop_times_table_from_teachers(
+    project_id: str,
+    dataset_id: str,
+    is_weekly: bool = True,
+    **context: dict) -> bool:
+    """
+    Recreates a table from teachers project (historical_stop_times) with option for weekly execution.
+    
+    Args:
+        project_id: Destination project ID
+        dataset_id: Destination dataset ID
+        is_weekly: If True, only runs on Mondays
+        context: Airflow context
+    """
+    # check if it's a weekly task and if it's not Wednesday (could be any other day, the idea is that we don't need to run this every day)
+    if is_weekly and context['execution_date'].weekday() != 2:
+        logging.info("Not Wednesday, skipping weekly task of loading historical stop times")
+        return False
+
+    try:
+        client = bigquery.Client(project=project_id)
+        
+        source_table = f"{project_id}.de_project_teachers.historical_stop_times"
+        destination_table = f"{project_id}.{dataset_id}.raw_historical_stop_times"
+
+        # Delete if exists
+        try:
+            client.delete_table(destination_table)
+            logging.info(f"Existing table {destination_table} deleted")
+        except Exception:
+            logging.info(f"Table {destination_table} does not exist")
+
+        # Create and copy data
+        source_table_ref = client.get_table(source_table)
+        new_table = bigquery.Table(destination_table, schema=source_table_ref.schema)
+        client.create_table(new_table)
+
+        query = f"INSERT INTO {destination_table} SELECT * FROM {source_table}"
+        query_job = client.query(query)
+        query_job.result()
+
+        logging.info (f"Successfully recreated table {destination_table}") 
+        return True
+
+    except Exception as e:
+        error_msg = f"Failed to recreate table historical_stop_times: {str(e)}"
+        logging.error(error_msg, exc_info=True)
+        return False
+
+
 # Define the DAG
 with DAG(
-    dag_id='extract_and_upload_gcs',
+    dag_id='1_test',
     start_date=datetime(2025, 1, 10),
     schedule_interval='@daily',
     catchup=False,
     default_args={'retries': 0}
 ) as dag:
-
-    tasks = []
 
     extract_stops_and_upload_to_bucket_task = PythonOperator(
         task_id='extract_stops_and_upload_to_bucket',
@@ -604,7 +607,14 @@ with DAG(
         provide_context = True
     )
 
-    
+    recreate_historical_stop_times_table_from_teachers_task = PythonOperator(
+        task_id='recreate_historical_stop_times_table_from_teachers',
+        python_callable=recreate_historical_stop_times_table_from_teachers,
+        op_args=[BIGQUERY_PROJECT, BIGQUERY_DATASET, True],
+        provide_context = True
+    )
+
+
     extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
 
     extract_municipalities_and_upload_to_bucket_task >> load_municipalities_to_bigquery_task
@@ -615,3 +625,5 @@ with DAG(
 
     extract_and_upload_zip_task >>  [load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
 
+    recreate_historical_stop_times_table_from_teachers_task
+    
