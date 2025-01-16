@@ -138,8 +138,8 @@ def convert_to_dataframe(content,
     """   
     if input_type=='json':
         logging.info("Handling as json file")
-        data = json.loads(content, dtype=dtype)
-        df = pd.DataFrame(data)
+        data = json.loads(content)
+        df = pd.DataFrame(data,dtype=dtype)
     elif input_type == 'csv':
         # Read the CSV data into a pandas DataFrame
 
