@@ -607,6 +607,13 @@ with DAG(
         provide_context = True
     )
 
+    load_stop_times_bigquery_task = PythonOperator(
+        task_id='load_stop_times_to_bigquery',
+        python_callable=load_tables_from_bucket_to_bigquery,
+        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "stop_times", "csv"], 
+        provide_context = True
+    )
+
     recreate_historical_stop_times_table_from_teachers_task = PythonOperator(
         task_id='recreate_historical_stop_times_table_from_teachers',
         python_callable=recreate_historical_stop_times_table_from_teachers,
@@ -623,7 +630,7 @@ with DAG(
 
     extract_routes_and_upload_to_bucket_task >> load_routes_to_bigquery_task
 
-    extract_and_upload_zip_task >>  [load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
+    extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
 
     recreate_historical_stop_times_table_from_teachers_task
     
