@@ -501,7 +501,7 @@ def recreate_historical_stop_times_table_from_teachers(
 
 # Define the DAG
 with DAG(
-    dag_id='1_test',
+    dag_id='g3_dag_extract_and_load_data',
     start_date=datetime(2025, 1, 10),
     schedule_interval='@daily',
     catchup=False,
