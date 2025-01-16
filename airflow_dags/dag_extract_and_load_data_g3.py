@@ -364,7 +364,7 @@ def extract_and_store_zip_files(base_url: str,
                             string_content= list(map(lambda x: x.decode('utf-8'),chunk))
                             file_content = header+ "".join(string_content)
                             bucket_filename= f"{target_filename.split(".")[0]}{iter_count if iter_count != 0 else ''}.csv"
-                            bucket_filepath=f"{context['execution_date'].strftime('%Y-%m-%d')}/{bucket_filename}" 
+                            bucket_filepath=f"raw_data/{context['execution_date'].strftime('%Y-%m-%d')}/{bucket_filename}" 
                             upload_blob_from_memory(BUCKET_NAME, file_content, bucket_filepath)
                             logging.info(f"Saved {bucket_filename} with {len(chunk)} bytes.")
                             iter_count+=1
@@ -447,7 +447,7 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
             dataset=dataset_id,
             table=table_name
         ) 
-    return success
+    return "success"
 
 def recreate_historical_stop_times_table_from_teachers(
     project_id: str,
