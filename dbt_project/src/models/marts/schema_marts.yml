@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: dim_routes
+    description: "Routes dimension table"
+    columns:
+      - name: route_sk
+        description: "Surrogate key for route"
+        tests:
+          - unique
+          - not_null
+      - name: route_id
+        description: "Natural key - route identifier"
+        tests:
+          - unique
+          - not_null
+      - name: route_long_name
+        description: "Route long name"
+      - name: line_id
+        description: "Line identifier"
+      - name: line_long_name
+        description: "Line long name"
+      - name: municipalities_ids
+        description: "Array of municipality IDs"
+      - name: municipalities_names
+        description: "Semicolon-separated list of municipality names"
+      - name: stops_names
+        description: "Semicolon-separated list of stop names"

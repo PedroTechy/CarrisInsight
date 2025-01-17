@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: bq_source  
+    database: data-eng-dev-437916
+    schema: data_eng_project_group3
+    tables:
+      - name: raw_routes
+      - name: raw_lines
+      - name: raw_stops
+      - name: raw_municipalities
