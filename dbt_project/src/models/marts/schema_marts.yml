@@ -20,9 +20,7 @@ models:
         description: "Line identifier"
       - name: line_long_name
         description: "Line long name"
-      - name: municipalities_ids
-        description: "Array of municipality IDs"
-      - name: municipalities_names
-        description: "Semicolon-separated list of municipality names"
+      - name: municipalities_id_name
+        description: "Semicolon-separated list of municipality_ids and municipality_names: 1002_Alges1; 1003_Fama; and so on"
       - name: stops_names
-        description: "Semicolon-separated list of stop names"
+        description: "Semicolon-separated list of stop_ids and stop_names: 1001_Alfandega; 1002_Covas and so on"
