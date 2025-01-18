@@ -1,18 +1,18 @@
 version: 2
 
 sources:
-  - name: carris_api
+  - name: raw_dataset
     database:  data-eng-dev-437916
-    schema: data_eng_project_group3  
+    schema: data_eng_project_group3_raw  
     tables:
-      - name: raw_routes
-      - name: raw_lines
-      - name: raw_stops
-      - name: raw_municipalities
-      - name: raw_dates
-      - name: raw_historical_stop_times
-      - name: raw_periods
-      - name: raw_shapes
-      - name: raw_stop_times
-      - name: raw_trips
-      - name: raw_weather_last_fivedays
+      - name: routes
+      - name: lines
+      - name: stops
+      - name: municipalities
+      - name: dates
+      - name: historical_stop_times
+      - name: periods
+      - name: shapes
+      - name: stop_times
+      - name: trips
+      - name: weather_last_fivedays
