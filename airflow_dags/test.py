@@ -23,10 +23,7 @@ import pandas as pd
 import requests
 from google.api_core.exceptions import NotFound
 from google.cloud import bigquery, storage
-from airflow import DAG
-from airflow.operators.python import PythonOperator
-from airflow.operators.dummy import DummyOperator
-from airflow.providers.google.cloud.hooks.gcs import GCSHook
+ 
 
 ############################################ Configurations ############################################
 
@@ -35,7 +32,7 @@ ZIP_FILES = ['stop_times.txt','calendar_dates.txt', 'trips.txt', "dates.txt", "s
 ENDPOINTS = ["municipalities", "stops", "lines", "routes"]
 BUCKET_NAME= "edit-data-eng-project-group3"
 BIGQUERY_PROJECT = 'data-eng-dev-437916'  
-BIGQUERY_DATASET = 'data_eng_project_group3_raw'   
+BIGQUERY_DATASET = 'data_eng_project_group3'   
 MAX_TABLE_CREATED_HOURS= 23 #used to drop large tables before starting imports
 MAX_TABLE_COMPARE_SIZE=300000
 MAX_FILE_CHUNK_SIZE=150000000
@@ -46,7 +43,6 @@ logging.basicConfig(level=logging.INFO,  # Set the default logging level
                     handlers=[logging.StreamHandler()])  # Output to stdout (default)
 
 # Utils functions 
-
 def upload_blob_from_memory(bucket_name: str,
                             contents: str,
                             destination_blob_name: str) -> None:
@@ -246,7 +242,6 @@ def get_diff(client,
             logging.info('Appending to existing query without checking for duplicates.')
         return bucket_df
 
-
 def load_dataframe_to_bigquery(dataframe: pd.DataFrame,
                                project: str,
                                dataset: str,
@@ -286,7 +281,7 @@ def load_dataframe_to_bigquery(dataframe: pd.DataFrame,
         return False
     
 # DAG Functions 
-def extract_and_store_json_data(base_url: str,
+def extract_and_store_weather_data(base_url: str,
                                 endpoint: str, 
                                 **context) -> None:
     """
@@ -308,50 +303,25 @@ def extract_and_store_json_data(base_url: str,
             logging.info(f"Fetched data from {endpoint}")
         else:
             raise Exception(f"Failed to fetch data from {url}. Status code: {response.status_code}")
-        execution_date = context['execution_date'].strftime('%Y-%m-%d')
-        target_file_path = f"raw_data/{execution_date}/{endpoint}.json"
-        upload_blob_from_memory(BUCKET_NAME,file_content,target_file_path)
-    except:
-        # added a generic exception to catch any error for a specific file without stopping the loop.
-        logging.error(f"Error when trying to handle {target_file_path}. File has been skipped")
-
-def extract_and_store_weather_data(base_url: str,
-                                  endpoint: str, 
-                                  **context) -> None:
-    """
-    Fetches data from the Weather API endpoint and uploads it to Google Cloud Storage. Could not reuse the extract_and_store_json_data given differences in the json contente 
-
-    Args:
-        base_url (str): The base URL for the API.
-        endpoint (str): The endpoint path to fetch data from.
-
-    Returns:
-        None
-    """
-    try:
-        url = f"{base_url}/{endpoint}"
-        response = requests.get(url) 
         
-        if response.status_code == 200: 
-            file_content=response.content
-            logging.info(f"Fetched data from {endpoint}")
+        # we dont need the country and owner, so geting ride of that before uploading to bq 
+        # Decode and parse bytes content into a dictionary
+        content_dict = json.loads(file_content.decode('utf-8'))
 
-            data_only = json.loads(file_content.decode('utf-8')).get('data', {}) 
+        # Convert the 'data' field back to a string to be able to use the blob_from_memory func (maybe fin func that upload as json)
+        file_content = json.dumps(content_dict.get('data', {}))
 
-            # Convert the 'data' field back to a string
-            file_content = json.dumps(data_only) 
-
-        else:
-            raise Exception(f"Failed to fetch data from {url}. Status code: {response.status_code}")
         execution_date = context['execution_date'].strftime('%Y-%m-%d')
-        endpoint = "weather_data"
+
+        # here we sub the endpoint (that was a numeric ID representing Lisbon) to the name that better represents the data
+        endpoint = "weather_lisbon_last_fivedays"
+        
         target_file_path = f"raw_data/{execution_date}/{endpoint}.json"
         upload_blob_from_memory(BUCKET_NAME,file_content,target_file_path)
     except:
         # added a generic exception to catch any error for a specific file without stopping the loop.
         logging.error(f"Error when trying to handle {target_file_path}. File has been skipped")
-
-
+          
 def extract_and_store_zip_files(base_url: str,
                                 zip_endpoint: str = "gtfs",
                                 file_list: list = [],
@@ -400,7 +370,7 @@ def extract_and_store_zip_files(base_url: str,
                             logging.info(f"Size of {iter_count} chunk {sys.getsizeof(chunk)}:\n")
                             string_content= list(map(lambda x: x.decode('utf-8'),chunk))
                             file_content = header+ "".join(string_content)
-                            bucket_filename= f"{target_filename.split(".")[0]}{iter_count if iter_count != 0 else ''}.csv"
+                            #bucket_filename= f"{target_filename.split(".")[0]}{iter_count if iter_count != 0 else ''}.csv"
                             bucket_filepath=f"raw_data/{context['execution_date'].strftime('%Y-%m-%d')}/{bucket_filename}" 
                             upload_blob_from_memory(BUCKET_NAME, file_content, bucket_filepath)
                             logging.info(f"Saved {bucket_filename} with {len(chunk)} bytes.")
@@ -431,7 +401,6 @@ def get_table_dtypes(table_name: str) -> dict:
         return {'shape_dist_traveled': 'float64'}
     # Add more table-specific logic here as needed
     else:
-
         return None
 
 def load_tables_from_bucket_to_bigquery(bucket_name: str,
@@ -459,7 +428,7 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
         - Handles specific files (e.g., 'stop_times') with custom data types.
     """
         
-    execution_date = context['execution_date'].strftime('%Y-%m-%d')       
+    execution_date =  '2025-01-17' 
     file_path = f"raw_data/{execution_date}/"
     
     logging.info(f"Processing file: {filename}")
@@ -486,11 +455,10 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
         ) 
     return "success"
 
-def recreate_historical_stop_times_table_from_teachers(
-    project_id: str,
-    dataset_id: str,
-    is_weekly: bool = True,
-    **context: dict) -> bool:
+def recreate_historical_stop_times_table_from_teachers(project_id: str,
+                                                       dataset_id: str,
+                                                       is_weekly: bool = True,
+                                                       **context: dict) -> bool:
     """
     Recreates a table from teachers project (historical_stop_times) with option for weekly execution.
     
@@ -535,155 +503,9 @@ def recreate_historical_stop_times_table_from_teachers(
         logging.error(error_msg, exc_info=True)
         return False
 
+ 
+base_url = r"https://api.ipma.pt/public/opendata/weatherforecast/daily/"
+endpoint = r"1110600.json"
+extract_and_store_json_data(base_url, endpoint)
 
-# Define the DAG
-with DAG(
-    dag_id='g3_dag_extract_and_load_data',
-    start_date=datetime(2025, 1, 10),
-    schedule_interval='@daily',
-    catchup=False,
-    default_args={'retries': 0}
-) as dag:
-
-    extract_stops_and_upload_to_bucket_task = PythonOperator(
-        task_id='extract_stops_and_upload_to_bucket',
-        python_callable=extract_and_store_json_data,
-        op_args=[BASE_API_URL, "stops"],  
-        provide_context = True
-    )
-
-    load_stops_to_bigquery_task = PythonOperator(
-        task_id='load_stops_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "stops", "json"], 
-        provide_context = True
-    ) 
-
-    extract_municipalities_and_upload_to_bucket_task = PythonOperator(
-        task_id='extract_municipalities_and_upload_to_bucket',
-        python_callable=extract_and_store_json_data,
-        op_args=[BASE_API_URL, "municipalities"],  
-        provide_context = True
-    )
-
-    load_municipalities_to_bigquery_task = PythonOperator(
-        task_id='load_municipalities_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "municipalities", "json"], 
-        provide_context = True
-    ) 
-
-    extract_lines_and_upload_to_bucket_task = PythonOperator(
-        task_id='extract_lines_and_upload_to_bucket',
-        python_callable=extract_and_store_json_data,
-        op_args=[BASE_API_URL, "lines"],  
-        provide_context = True
-    )
-
-    load_lines_to_bigquery_task = PythonOperator(
-        task_id='load_lines_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "lines", "json"], 
-        provide_context = True
-    ) 
-
-    extract_routes_and_upload_to_bucket_task = PythonOperator(
-        task_id='extract_routes_and_upload_to_bucket',
-        python_callable=extract_and_store_json_data,
-        op_args=[BASE_API_URL, "routes"],  
-        provide_context = True
-    )
-
-    load_routes_to_bigquery_task = PythonOperator(
-        task_id='load_routes_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "routes", "json"], 
-        provide_context = True
-    )
-
-    extract_and_store_weather_data_task = PythonOperator(
-        task_id='extract_and_store_weather_data',
-        python_callable=extract_and_store_weather_data,
-        op_args=["https://api.ipma.pt/public/opendata/weatherforecast/daily/", "1110600.json"],  
-        provide_context = True
-    )
-
-    load_weather_data_to_bigquery_task = PythonOperator(
-        task_id='load_routes_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "weather_data", "json"], 
-        provide_context = True
-    ) 
-
-    # Zip file extraction and storage (single extraction to avoid multiple unzips)
-    extract_and_upload_zip_task = PythonOperator(
-        task_id='extract_and_upload_zip',
-        python_callable=extract_and_store_zip_files,
-        op_args=[BASE_API_URL, "gtfs", ZIP_FILES],  # "gtfs" is the default endpoint that contains the zip
-        provide_context = True
-    )
-
-    load_calendar_dates_to_bigquery_task = PythonOperator(
-        task_id='load_calendar_dates_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "calendar_dates", "csv"], 
-        provide_context = True
-    )
-
-    load_trips_to_bigquery_task = PythonOperator(
-        task_id='load_trips_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "trips", "csv"], 
-        provide_context = True
-    )
-
-    load_dates_to_bigquery_task = PythonOperator(
-        task_id='load_dates_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "dates", "csv"], 
-        provide_context = True
-    )
-
-    load_shapes_to_bigquery_task = PythonOperator(
-        task_id='load_shapes_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "shapes", "csv"], 
-        provide_context = True
-    )
-
-    load_periods_bigquery_task = PythonOperator(
-        task_id='load_periods_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "periods", "csv"], 
-        provide_context = True
-    )
-
-    load_stop_times_bigquery_task = PythonOperator(
-        task_id='load_stop_times_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "stop_times", "csv"], 
-        provide_context = True
-    )
-
-    recreate_historical_stop_times_table_from_teachers_task = PythonOperator(
-        task_id='recreate_historical_stop_times_table_from_teachers',
-        python_callable=recreate_historical_stop_times_table_from_teachers,
-        op_args=[BIGQUERY_PROJECT, BIGQUERY_DATASET, True],
-        provide_context = True
-    )
-
-
-    extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
-
-    extract_municipalities_and_upload_to_bucket_task >> load_municipalities_to_bigquery_task
-
-    extract_lines_and_upload_to_bucket_task >> load_lines_to_bigquery_task
-
-    extract_routes_and_upload_to_bucket_task >> load_routes_to_bigquery_task
-
-    extract_and_store_weather_data_task >> load_weather_data_to_bigquery_task
-
-    extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
-
-    recreate_historical_stop_times_table_from_teachers_task
-    
+load_tables_from_bucket_to_bigquery(BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "weather_last_fivedays", "json")
