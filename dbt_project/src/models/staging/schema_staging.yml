@@ -6,3 +6,10 @@ models:
         description: Trip start time
         tests:
           - not_null
+  - name: silver_real_stop_times
+    description: The actual stop times of the trips
+    columns:
+      - name: real_start_time
+        description: Trip start time
+        tests:
+          - not_null
