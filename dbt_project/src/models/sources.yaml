@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: carris_raw
+    database:  data-eng-dev-437916
+    schema: data_eng_project_group3  
+    tables:
+      - name: raw_routes
+      - name: db  
