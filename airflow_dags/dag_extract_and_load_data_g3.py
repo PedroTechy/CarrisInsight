@@ -475,7 +475,7 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
             return "Failure"
 
         # define bigquery table name    
-        table_name = f"raw_{filename}"
+        table_name = filename
     
         # Load to bigQuery
         success = load_dataframe_to_bigquery(
