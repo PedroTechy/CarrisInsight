@@ -36,7 +36,7 @@ This project is organized into three main folders, each corresponding to a key c
  - [Bucket - Staging](https://console.cloud.google.com/storage/browser/edit-data-eng-project-group3?authuser=2&invt=AbmZ9w&project=data-eng-dev-437916&pageState=(%22StorageObjectListTable%22:(%22f%22:%22%255B%255D%22)))
 
 ### Access to Airflow 
-  - [Airflow](https://edit-data-eng.duckdns.org/)
+  - [Airflow](http://edit-data-eng.duckdns.org/dags/1_test/grid?dag_run_id=scheduled__2025-01-15T00%3A00%3A00%2B00%3A00)
     - **Username** - daniel.moraes@̶w̶e̶a̶r̶e̶e̶d̶i̶t̶.̶i̶o̶ (without @weareedit.io)
     - **Password** - Given by Gonçalo
   - [Bucket - DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
