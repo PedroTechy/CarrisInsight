@@ -11,7 +11,7 @@ stop_sequence,
 shape_dist_traveled,
 trip_id
            
-FROM `data_eng_project_group3.raw_stop_times`
+FROM `data_eng_project_group3_raw.stop_times`
 QUALIFY
   ROW_NUMBER() OVER(PARTITION BY trip_id ORDER BY stop_sequence DESC) = 1
   OR ROW_NUMBER() OVER(PARTITION BY trip_id ORDER BY stop_sequence ASC) = 1

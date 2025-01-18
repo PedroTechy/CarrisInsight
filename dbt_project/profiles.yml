@@ -1,11 +1,21 @@
 edit_de_project:
-  target: staging
+  target: raw
   outputs:
+    raw:
+      type: bigquery
+      method: oauth
+      project: data-eng-dev-437916
+      dataset: data_eng_project_group3_raw
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      location: EU
+      priority: interactive
+      threads: 4 # Must be a value of 1 or greater 
     staging:
       type: bigquery
       method: oauth
       project: data-eng-dev-437916
-      dataset: data_eng_project_group3
+      dataset: data_eng_project_group3_staging
       job_execution_timeout_seconds: 300
       job_retries: 1
       location: EU
@@ -15,9 +25,9 @@ edit_de_project:
       type: bigquery
       method: oauth
       project: data-eng-dev-437916
-      dataset: data_eng_project_group3
+      dataset: data_eng_project_group3_modeling
       job_execution_timeout_seconds: 300
       job_retries: 1
       location: EU
       priority: interactive
-      threads: 4 # Must be a value of 1 or greater 
+      threads: 4 # Must be a value of 1 or greater
