@@ -16,34 +16,31 @@ models:
           - not_null
 
   - name: calendar_dates
-    description: Intermeditate table for stop times
+    description: Intermediate table for stop times
     columns:
       - name: date
-        description: Calendar date 
+        description: Calendar date
         data_type: date
         tests:
           - not_null
-    columns:
       - name: day_type
-        description:
+        description: Type of day (e.g., weekday, weekend)
         tests:
           - not_null
-    columns:
       - name: exception_type
-        description:
+        description: Exception type for the date
         tests:
           - not_null
-    columns:
       - name: holiday
-        description: 
+        description: Indicates if the date is a holiday
         tests:
           - not_null
-    columns:
-      - name: period
-        description: 
+      - name: period_name
+        description: Time period classification
         tests:
           - not_null
-    columns:
+          - accepted_values:
+              values: ['Verão', 'Férias Escolares', 'Período Escolar', 'Outros']
       - name: service_id
         description: Service ID
         tests:
