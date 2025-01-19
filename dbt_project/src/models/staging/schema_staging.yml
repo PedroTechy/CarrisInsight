@@ -15,7 +15,7 @@ models:
         tests:
           - not_null
       - name: shape_dist_traveled
-        description: The distance traveled along the route shape up to the stop (in meters)
+        description: The distance traveled along the route shape up to the stop (in km)
         tests:
           - not_null
       - name: trip_id
@@ -27,10 +27,20 @@ models:
   - name: real_stop_times
     description: The actual stop times of the trips
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: trip_id
+        description: Unique identifier for the trip
         tests:
           - not_null
+          - unique
+      - name: real_start_time
+        description: The actual start time of the trip at the stop
+        tests:
+          - not_null
+      - name: real_end_time
+        description: The actual end time of the trip at the stop
+        tests:
+          - not_null
+
 
   - name: calendar_dates
     description: Intermediate table for stop times
