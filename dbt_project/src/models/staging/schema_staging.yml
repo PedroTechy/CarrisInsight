@@ -1,12 +1,71 @@
 models:
-  - name: staging_stop_times
+  - name: stop_times
     description: Intermeditate table for stop times
     columns:
       - name: start_time
         description: Trip start time
         tests:
           - not_null
-  - name: staging_real_stop_times
+
+  - name: real_stop_times
+    description: The actual stop times of the trips
+    columns:
+      - name: real_start_time
+        description: Trip start time
+        tests:
+          - not_null
+
+  - name: calendar_dates
+    description: Intermeditate table for stop times
+    columns:
+      - name: date
+        description: Calendar date 
+        data_type: date
+        tests:
+          - not_null
+    columns:
+      - name: day_type
+        description:
+        tests:
+          - not_null
+    columns:
+      - name: exception_type
+        description:
+        tests:
+          - not_null
+    columns:
+      - name: holiday
+        description: 
+        tests:
+          - not_null
+    columns:
+      - name: period
+        description: 
+        tests:
+          - not_null
+    columns:
+      - name: service_id
+        description: Service ID
+        tests:
+          - not_null
+
+  - name: routes
+    description: The actual stop times of the trips
+    columns:
+      - name: real_start_time
+        description: Trip start time
+        tests:
+          - not_null
+
+  - name: lines
+    description: The actual stop times of the trips
+    columns:
+      - name: real_start_time
+        description: Trip start time
+        tests:
+          - not_null
+
+  - name: stops
     description: The actual stop times of the trips
     columns:
       - name: real_start_time

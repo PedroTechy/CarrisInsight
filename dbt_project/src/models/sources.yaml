@@ -5,14 +5,15 @@ sources:
     database:  data-eng-dev-437916
     schema: data_eng_project_group3_raw  
     tables:
-      - name: routes
-      - name: lines
-      - name: stops
-      - name: municipalities
+      - name: calendar_dates
       - name: dates
       - name: historical_stop_times
+      - name: lines
+      - name: municipalities
       - name: periods
+      - name: routes
       - name: shapes
       - name: stop_times
+      - name: stops
       - name: trips
-      - name: weather_last_fivedays
+      - name: weather_data
