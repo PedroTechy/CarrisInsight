@@ -1,11 +1,28 @@
 models:
   - name: stop_times
-    description: Intermeditate table for stop times
+    description: Intermediate table for storing the scheduled stop times of trips
     columns:
-      - name: start_time
-        description: Trip start time
+      - name: scheduled_start_time
+        description: The scheduled start time of the trip at the stop
         tests:
           - not_null
+      - name: scheduled_end_time
+        description: The scheduled end time of the trip at the stop
+        tests:
+          - not_null
+      - name: stop_sequence
+        description: The sequence of the stop in the trip (e.g., 1 for the first stop, 2 for the second stop)
+        tests:
+          - not_null
+      - name: shape_dist_traveled
+        description: The distance traveled along the route shape up to the stop (in meters)
+        tests:
+          - not_null
+      - name: trip_id
+        description: Unique identifier for the trip associated with the stop
+        tests:
+          - not_null
+
 
   - name: real_stop_times
     description: The actual stop times of the trips

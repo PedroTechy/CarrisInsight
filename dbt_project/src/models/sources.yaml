@@ -24,7 +24,6 @@ sources:
       - name: calendar_dates      
       - name: lines
       - name: real_stop_times
-      - name: calendar_dates      
       - name: routes
       - name: stop_times
       - name: stops
