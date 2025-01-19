@@ -510,7 +510,7 @@ def recreate_historical_stop_times_table_from_teachers(
         client = bigquery.Client(project=project_id)
         
         source_table = f"{project_id}.de_project_teachers.historical_stop_times"
-        destination_table = f"{project_id}.{dataset_id}.raw_historical_stop_times"
+        destination_table = f"{project_id}.{dataset_id}.historical_stop_times"
 
         # Delete if exists
         try:
