@@ -67,12 +67,24 @@ models:
         tests:
           - not_null
 
-
   - name: lines
-    description: The actual stop times of the trips
+    description: The lines
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: line_id
+        description: Unique identifier for the line
+        tests:
+          - not_null
+          - unique
+      - name: line_name
+        description: Name of the line 
+        tests:
+          - not_null
+      - name: list_routes
+        description: List of routes associated with the line
+        tests:
+          - not_null
+      - name: list_patterns
+        description: List of patterns or schedules for the line
         tests:
           - not_null
 
