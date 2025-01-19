@@ -5,3 +5,5 @@
 *.txt
 __pycache__
 /.project
+/dbt_project/.user.yml
+/dbt_project/logs

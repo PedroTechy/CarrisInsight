@@ -27,6 +27,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
+from airflow.providers.google.cloud.operators.cloud_run import CloudRunExecuteJobOperator
 
 ############################################ Configurations ############################################
 
@@ -670,6 +671,27 @@ with DAG(
         python_callable=recreate_historical_stop_times_table_from_teachers,
         op_args=[BIGQUERY_PROJECT, BIGQUERY_DATASET, True],
         provide_context = True
+    )
+
+    # DBT tasks
+
+    dbt_debug_task = CloudRunExecuteJobOperator(
+        task_id='dbt_debug',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["debug"]}]
+        }
+    )
+    dbt_run = CloudRunExecuteJobOperator(
+        task_id='dbt_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run"]}]
+        }
     )
 
 
