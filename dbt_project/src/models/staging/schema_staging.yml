@@ -1,74 +1,175 @@
 models:
   - name: stop_times
-    description: Intermeditate table for stop times
+    description: Intermediate table for storing the scheduled stop times of trips
     columns:
-      - name: start_time
-        description: Trip start time
+      - name: scheduled_start_time
+        description: The scheduled start time of the trip at the stop
         tests:
           - not_null
+      - name: scheduled_end_time
+        description: The scheduled end time of the trip at the stop
+        tests:
+          - not_null
+      - name: stop_sequence
+        description: The sequence of the stop in the trip (e.g., 1 for the first stop, 2 for the second stop)
+        tests:
+          - not_null
+      - name: shape_dist_traveled
+        description: The distance traveled along the route shape up to the stop (in km)
+        tests:
+          - not_null
+      - name: trip_id
+        description: Unique identifier for the trip associated with the stop
+        tests:
+          - not_null
+
 
   - name: real_stop_times
     description: The actual stop times of the trips
     columns:
+      - name: trip_id
+        description: Unique identifier for the trip
+        tests:
+          - not_null
+          - unique
       - name: real_start_time
-        description: Trip start time
+        description: The actual start time of the trip at the stop
+        tests:
+          - not_null
+      - name: real_end_time
+        description: The actual end time of the trip at the stop
         tests:
           - not_null
 
+
   - name: calendar_dates
-    description: Intermeditate table for stop times
+    description: Intermediate table for stop times
     columns:
       - name: date
-        description: Calendar date 
+        description: Calendar date
         data_type: date
         tests:
           - not_null
-    columns:
       - name: day_type
-        description:
+        description: Type of day (e.g., weekday, weekend)
         tests:
           - not_null
-    columns:
       - name: exception_type
-        description:
+        description: Exception type for the date
         tests:
           - not_null
-    columns:
       - name: holiday
-        description: 
+        description: Indicates if the date is a holiday
         tests:
           - not_null
-    columns:
-      - name: period
-        description: 
+      - name: period_name
+        description: Time period classification
         tests:
           - not_null
-    columns:
+          - accepted_values:
+              values: ['Verão', 'Férias Escolares', 'Período Escolar', 'Outros']
       - name: service_id
         description: Service ID
         tests:
           - not_null
 
   - name: routes
-    description: The actual stop times of the trips
+    description: The possible routes
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: route_id
+        description: Unique identifier for the route
+        tests:
+          - not_null
+          - unique
+      - name: route_name
+        description: Name of the route
+        tests:
+          - not_null
+      - name: line_id
+        description: Identifier for the specific line associated with the route
+        tests:
+          - not_null
+      - name: list_municipality_name
+        description: Names of the municipalities where the route operates
         tests:
           - not_null
 
   - name: lines
-    description: The actual stop times of the trips
+    description: The lines
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: line_id
+        description: Unique identifier for the line
+        tests:
+          - not_null
+          - unique
+      - name: line_name
+        description: Name of the line 
+        tests:
+          - not_null
+      - name: list_routes
+        description: List of routes associated with the line
+        tests:
+          - not_null
+      - name: list_patterns
+        description: List of patterns or schedules for the line
         tests:
           - not_null
 
   - name: stops
-    description: The actual stop times of the trips
+    description: The existing stops
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: stop_id
+        description: Unique identifier for the stop
+        tests:
+          - not_null
+          - unique
+      - name: stop_name
+        description: Name of the stop
+        tests:
+          - not_null
+      - name: municipality_id
+        description: Unique identifier for the municipality
+        tests:
+          - not_null
+      - name: municipality_name
+        description: Name of the municipality where the stop is located
+        tests:
+          - not_null
+      - name: region_name
+        description: Name of the region where the stop is located
+        tests:
+          - not_null
+      - name: list_pattern
+        description: List of patterns or schedules associated with the stop
+        tests:
+          - not_null
+      - name: operational_status
+        description: Status of the stop (e.g., "active", "inactive")
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['ACTIVE', 'INACTIVE', 'PROVISIONAL', 'VOIDED', 'SEASONAL']
+ 
+  - name: trips
+    description: The existing details of trips
+    columns:
+      - name: trip_id
+        description: Identifier for the trip (non unique since trip info can change)
+        tests:
+          - not_null
+      - name: route_id
+        description: Identifier for the route associated with the trip
+        tests:
+          - not_null
+      - name: pattern_id
+        description: Unique identifier for the trip pattern (e.g., specific path or schedule)
+        tests:
+          - not_null
+      - name: service_id
+        description: Identifier for the service associated with the trip (e.g., regular service, holiday service)
+        tests:
+          - not_null
+      - name: shape_id
+        description: Identifier for the shape or path the trip follows
         tests:
           - not_null
