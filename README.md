@@ -44,6 +44,9 @@ This project is organized into three main folders, each corresponding to a key c
 ### BigQuery
  - [data_eng_project_group3](https://console.cloud.google.com/bigquery?referrer=search&authuser=0&inv=1&invt=AbmjTA&project=data-eng-dev-437916&ws=!1m4!1m3!3m2!1sdata-eng-dev-437916!2sdata_eng_project_group3)
 
+### Running dbt
+ - [Cloud Run Jobs](https://console.cloud.google.com/run/jobs?authuser=2&inv=1&invt=AbnSMQ&project=data-eng-dev-437916)
+
 ### Data Extraction Sources
 (Not managed by us, only extraction)
  - [API Carris](https://github.com/carrismetropolitana/api)
