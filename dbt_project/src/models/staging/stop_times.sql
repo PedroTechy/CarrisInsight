@@ -1,3 +1,5 @@
+
+
   with filtered as (
   SELECT 
     departure_time,
@@ -12,8 +14,8 @@
 )
 
 select 
-  LAG(departure_time, 1) OVER(PARTITION BY trip_id ORDER BY stop_sequence) AS scheduled_start_time,
-  departure_time as scheduled_end_time,
+  CAST({{ handle_invalid_time('LAG(departure_time, 1) OVER(PARTITION BY trip_id ORDER BY stop_sequence)') }} AS TIME) AS scheduled_start_time,
+  CAST({{ handle_invalid_time('departure_time') }} AS TIME) AS scheduled_end_time,
   stop_sequence,
   shape_dist_traveled,
   trip_id

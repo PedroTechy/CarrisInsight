@@ -1,0 +1,9 @@
+version: 2
+
+macros:
+  - name: handle_invalid_time
+    description: Verify if the time is invalid and converts it.
+    arguments:
+      - name: time_column
+        description: Time.
+        type: string
