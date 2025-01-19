@@ -23,7 +23,10 @@ sources:
     schema: data_eng_project_group3_staging
     tables:
       - name: calendar_dates      
+      - name: stop_times
+      - name: stops
       - name: lines
+      - name: routes
       - name: real_stop_times
       - name: routes
       - name: stop_times

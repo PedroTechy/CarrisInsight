@@ -5,5 +5,6 @@ SELECT
     municipality_name,
     region_name,
     patterns as list_pattern,
-    operational_status
+    operational_status,
+    routes
 FROM {{ source('raw_dataset', 'stops') }}
