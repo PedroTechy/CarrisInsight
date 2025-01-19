@@ -502,9 +502,9 @@ def recreate_historical_stop_times_table_from_teachers(
         context: Airflow context
     """
     # check if it's a weekly task and if it's not Wednesday (could be any other day, the idea is that we don't need to run this every day)
-    #if is_weekly and context['execution_date'].weekday() != 2:
-    #    logging.info("Not Wednesday, skipping weekly task of loading historical stop times")
-    #    return False
+    if is_weekly and context['execution_date'].weekday() != 2:
+        logging.info("Not Wednesday, skipping weekly task of loading historical stop times")
+        return False
 
     try:
         client = bigquery.Client(project=project_id)
