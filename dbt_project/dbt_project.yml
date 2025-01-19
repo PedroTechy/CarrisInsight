@@ -23,10 +23,16 @@ vars:
 
 models:
   edit_de_project:
+    raw:
+      +dataset: raw
+      +materialized: table
     staging:
+      +dataset: staging
       +materialized: view
     marts:
+      +dataset: marts
       +materialized: table
+
 
 saved-queries:
   +cache:

@@ -116,41 +116,55 @@ rota varios
 cada pattern tem um shape 
 
 
-```mermaid
-erDiagram
-    fact_trips ||--|{ dim_date : day_of_trip
-    fact_trips {
+-- fact_trip -- uma tabela com uma linha por cada viagem que aconteceu (trip table * calendar_date * dates para descobrir o servico de cada dia) 
+
+To create the fact trips we need to use silver_stop_times  and the historical stop times (to get real times info), raw_trips and the calendar dates and dates to get the type of trip
+    
+fact_trips {
         string trip_id
         string sk_start_date
         string sk_end_date
-        string sk_route
+        string sk_routes
         string start_time
         string end_time
+        string real_start_time
+        string real_end_time
         string distance_travelled
         string direction
         int service_id
-    }
+	}
 
-    dim_date {
+dim_date {
+	sk_date
         string month
-        string day
+        string day	
+	string
     }
-    dim_routes {
+	
+dim_weather {
+	sk_date (we will then join this with date to get the weather for a given trip)
+	weather_id ?
+	temp_min
+	temp_max
+	}
+
+dim_events {  (if we ever add this)
+	sk_date
+	columns_with_event_info
+}
+	
+
+dim_routes {
+	sk_routes
         int route_id
         string line_id
         string lines_long_name
         string route_name
-        string municipalities_list
+        string i_name_municipalities_list
         string id_name_stops_list
     }
 
-    opt_dim_stops {
-       string route_stop_id
-       string stop_name
-
-    }
 
 
-```
 
 

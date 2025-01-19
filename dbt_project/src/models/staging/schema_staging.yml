@@ -1,12 +1,12 @@
 models:
-  - name: silver_stop_times
+  - name: staging_stop_times
     description: Intermeditate table for stop times
     columns:
       - name: start_time
         description: Trip start time
         tests:
           - not_null
-  - name: silver_real_stop_times
+  - name: staging_real_stop_times
     description: The actual stop times of the trips
     columns:
       - name: real_start_time
