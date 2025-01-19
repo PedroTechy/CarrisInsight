@@ -41,6 +41,28 @@ models:
         tests:
           - not_null
 
+  - name: weather_data
+    description: Weather data related to a specific day in Lisbon
+    columns:
+      - name: date
+        description: The date of the weather observation.
+        tests:
+          - not_null
+          - unique
+      - name: wind_speed_class
+        description: The classification of the wind speed during the trip (e.g., weak, moderate, strong).
+        tests:
+          - not_null
+      - name: precipitation_class
+        description: The classification of precipitation during the trip (e.g., no precipitation, weak, moderate, strong).
+        tests:
+          - not_null
+      - name: weather_type
+        description: The type of weather observed during the trip (e.g., clear sky, rain, fog).
+        tests:
+          - not_null
+
+
 
   - name: calendar_dates
     description: Intermediate table for stop times
