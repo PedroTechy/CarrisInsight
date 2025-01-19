@@ -684,15 +684,7 @@ with DAG(
             "container_overrides": [{"args": ["debug"]}]
         }
     )
-    dbt_staging_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_staging_test',
-        project_id=BIGQUERY_PROJECT,
-        region='europe-west1',
-        job_name='group3-dbt',
-        overrides={
-            "container_overrides": [{"args": ["test", "-s", "staging"]}]
-        }
-    )
+
     dbt_staging_run_task = CloudRunExecuteJobOperator(
         task_id='dbt_staging_run',
         project_id=BIGQUERY_PROJECT,
@@ -702,15 +694,17 @@ with DAG(
             "container_overrides": [{"args": ["run", "-s", "staging"]}]
         }
     )
-    dbt_marts_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_marts_test',
+
+    dbt_staging_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
         overrides={
-            "container_overrides": [{"args": ["test", "-s", "marts"]}]
+            "container_overrides": [{"args": ["test", "-s", "staging"]}]
         }
     )
+
     dbt_marts_run_task = CloudRunExecuteJobOperator(
         task_id='dbt_marts_run',
         project_id=BIGQUERY_PROJECT,
@@ -720,7 +714,16 @@ with DAG(
             "container_overrides": [{"args": ["run", "-s", "marts"]}]
         }
     )
-
+    
+    dbt_marts_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts"]}]
+        }
+    )
 
 
     extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
@@ -749,4 +752,4 @@ with DAG(
         load_dates_to_bigquery_task, 
         load_shapes_to_bigquery_task, 
         load_periods_bigquery_task
-    ] >> dbt_debug_task >> dbt_staging_test_task >> dbt_staging_test_task >> dbt_staging_run_task
+    ] >> dbt_debug_task >> dbt_staging_run_task >> dbt_staging_test_task >> dbt_marts_run_task >> dbt_marts_test_task
