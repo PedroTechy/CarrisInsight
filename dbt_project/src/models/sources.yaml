@@ -22,8 +22,13 @@ sources:
     schema: data_eng_project_group3_staging
     tables:
       - name: calendar_dates      
-      - name: stop_times
+      - name: lines
       - name: real_stop_times
+      - name: calendar_dates      
+      - name: routes
+      - name: stop_times
+      - name: stops
+      - name: trips
   - name: marts_dataset
     database: data-eng-dev-437916
     schema: data_eng_project_group3_marts
