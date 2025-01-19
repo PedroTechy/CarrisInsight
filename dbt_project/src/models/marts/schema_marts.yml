@@ -2,25 +2,101 @@ version: 2
 
 models:
   - name: dim_routes
-    description: "Routes dimension table"
+    description: Routes dimension table
     columns:
       - name: route_sk
-        description: "Surrogate key for route"
+        description: Surrogate key for route
         tests:
           - unique
           - not_null
       - name: route_id
-        description: "Natural key - route identifier"
+        description: Natural key - route identifier
         tests:
           - unique
           - not_null
       - name: route_long_name
-        description: "Route long name"
+        description: Route long name
       - name: line_id
-        description: "Line identifier"
+        description: Line identifier
       - name: line_long_name
-        description: "Line long name"
+        description: Line long name
       - name: municipalities_id_name
-        description: "Semicolon-separated list of municipality_ids and municipality_names: 1002_Alges1; 1003_Fama; and so on"
+        description: Semicolon-separated list of municipality_ids and municipality_name - 1002_Alges1; 1003_Fama and so on
       - name: stops_names
-        description: "Semicolon-separated list of stop_ids and stop_names: 1001_Alfandega; 1002_Covas and so on"
+        description: Semicolon-separated list of stop_ids and stop_names - 1001_Alfandega; 1002_Covas and so on
+  
+  - name: dim_date
+    description: Dimension table about the date.
+    columns:
+      - name: date_day
+        description: Date.
+      - name: prior_date_day
+        description: Date of the previous day.
+      - name: next_date_day
+        description: Date of the next day.
+      - name: prior_year_date_day
+        description: Date of the same day in the previous year.
+      - name: prior_year_over_year_date_day
+        description: Date of the same day in the year before the previous year.
+      - name: day_of_week
+        description: Day of the week.
+      - name: day_of_week_name
+        description: Name of the day of the week.
+      - name: day_of_week_name_short
+        description: Short name of the day of the week.
+      - name: day_of_month
+        description: Day of the month.
+      - name: day_of_year
+        description: Day of the year.
+      - name: week_start_date
+        description: Start date of the week.
+      - name: week_end_date
+        description: End date of the week.
+      - name: prior_year_week_start_date
+        description: Start date of the week in the previous year.
+      - name: prior_year_week_end_date
+        description: End date of the week in the previous year.
+      - name: week_of_year
+        description: Week of the year.
+      - name: iso_week_start_date
+        description: Start date of the ISO week.
+      - name: iso_week_end_date
+        description: End date of the ISO week.
+      - name: prior_year_iso_week_start_date
+        description: Start date of the ISO week in the previous year.
+      - name: prior_year_iso_week_end_date
+        description: End date of the ISO week in the previous year.
+      - name: iso_week_of_year
+        description: ISO week of the year.
+      - name: prior_year_week_of_year
+        description: Week of the year in the previous year.
+      - name: prior_year_iso_week_of_year
+        description: ISO week of the year in the previous year.
+      - name: month_of_year
+        description: Month of the year.
+      - name: month_name
+        description: Name of the month.
+      - name: month_name_short
+        description: Short name of the month.
+      - name: month_start_date
+        description: Start date of the month.
+      - name: month_end_date
+        description: End date of the month.
+      - name: prior_year_month_start_date
+        description: Start date of the month in the previous year.
+      - name: prior_year_month_end_date
+        description: End date of the month in the previous year.
+      - name: quarter_of_year
+        description: Quarter of the year.
+      - name: quarter_start_date
+        description: Start date of the quarter.
+      - name: quarter_end_date
+        description: End date of the quarter.
+      - name: year_number
+        description: Year number.
+      - name: year_start_date
+        description: Start date of the year.
+      - name: year_end_date
+        description: End date of the year.
+      - name: ingested_at
+        description: Timestamp when the data was ingested.
