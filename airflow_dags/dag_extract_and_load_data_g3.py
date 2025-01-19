@@ -609,7 +609,7 @@ with DAG(
     )
 
     load_weather_data_to_bigquery_task = PythonOperator(
-        task_id='load_routes_to_bigquery',
+        task_id='load_weather_data_to_bigquery',
         python_callable=load_tables_from_bucket_to_bigquery,
         op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "weather_data", "json"], 
         provide_context = True
