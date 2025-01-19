@@ -684,7 +684,16 @@ with DAG(
             "container_overrides": [{"args": ["debug"]}]
         }
     )
-    dbt_staging_run = CloudRunExecuteJobOperator(
+    dbt_staging_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging"]}]
+        }
+    )
+    dbt_staging_run_task = CloudRunExecuteJobOperator(
         task_id='dbt_staging_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
@@ -693,7 +702,16 @@ with DAG(
             "container_overrides": [{"args": ["run", "-s", "staging"]}]
         }
     )
-    dbt_marts_run = CloudRunExecuteJobOperator(
+    dbt_marts_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts"]}]
+        }
+    )
+    dbt_marts_run_task = CloudRunExecuteJobOperator(
         task_id='dbt_marts_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
@@ -731,4 +749,4 @@ with DAG(
         load_dates_to_bigquery_task, 
         load_shapes_to_bigquery_task, 
         load_periods_bigquery_task
-    ] >> dbt_debug_task >> dbt_staging_run >> dbt_marts_run
+    ] >> dbt_debug_task >> dbt_staging_test_task >> dbt_staging_test_task >> dbt_staging_run_task
