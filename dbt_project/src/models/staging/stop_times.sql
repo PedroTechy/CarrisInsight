@@ -1,4 +1,4 @@
-with filtered as (
+  with filtered as (
   SELECT 
     departure_time,
     stop_sequence,
@@ -12,8 +12,8 @@ with filtered as (
 )
 
 select 
-  LAG(departure_time, 1) OVER(PARTITION BY trip_id ORDER BY stop_sequence) AS start_time,
-  departure_time,
+  LAG(departure_time, 1) OVER(PARTITION BY trip_id ORDER BY stop_sequence) AS scheduled_start_time,
+  departure_time as scheduled_end_time,
   stop_sequence,
   shape_dist_traveled,
   trip_id

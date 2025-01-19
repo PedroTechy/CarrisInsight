@@ -17,3 +17,10 @@ sources:
       - name: stops
       - name: trips
       - name: weather_data
+  - name: staging_dataset
+    database: data-eng-dev-437916
+    schema: data_eng_project_group3_staging
+    tables:
+      - name: calendar_dates      
+      - name: stop_times
+      - name: real_stop_times
