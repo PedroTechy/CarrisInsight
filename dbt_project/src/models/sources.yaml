@@ -23,6 +23,9 @@ sources:
     tables:
       - name: calendar_dates      
       - name: stop_times
+      - name: stops
+      - name: lines
+      - name: routes
       - name: real_stop_times
   - name: marts_dataset
     database: data-eng-dev-437916
