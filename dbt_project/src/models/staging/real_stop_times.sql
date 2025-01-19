@@ -1,9 +1,3 @@
-{{
-  config(
-    materialized = 'table',
-    )
-}}
-
 WITH real_times AS (
     SELECT
         trip_id,
