@@ -97,6 +97,8 @@ pip3 install -r requirements.txt
 Create and activate virtual environment:
 ```sh
 python -m venv .project
+```
+```sh
 .\.project\Scripts\Activate.ps1
 ```
 
