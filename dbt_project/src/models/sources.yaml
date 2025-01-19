@@ -24,3 +24,11 @@ sources:
       - name: calendar_dates      
       - name: stop_times
       - name: real_stop_times
+  - name: marts_dataset
+    database: data-eng-dev-437916
+    schema: data_eng_project_group3_marts
+    tables:
+      - name: dim_calendar_dates      
+      - name: dim_date
+      - name: dim_routes
+      - name: fact_trips
