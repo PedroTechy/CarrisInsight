@@ -539,7 +539,7 @@ def recreate_historical_stop_times_table_from_teachers(
 
 # Define the DAG
 with DAG(
-    dag_id='g3_dag_extract_and_load_data',
+    dag_id='group3_daily_carris_elt',
     start_date=datetime(2025, 1, 10),
     schedule_interval='@daily',
     catchup=False,
@@ -675,33 +675,33 @@ with DAG(
 
     # DBT tasks
 
-    # dbt_debug_task = CloudRunExecuteJobOperator(
-    #     task_id='dbt_debug',
-    #     project_id=BIGQUERY_PROJECT,
-    #     region='europe-west1',
-    #     job_name='group3-dbt',
-    #     overrides={
-    #         "container_overrides": [{"args": ["debug"]}]
-    #     }
-    # )
-    # dbt_staging_run = CloudRunExecuteJobOperator(
-    #     task_id='dbt_staging_run',
-    #     project_id=BIGQUERY_PROJECT,
-    #     region='europe-west1',
-    #     job_name='group3-dbt',
-    #     overrides={
-    #         "container_overrides": [{"args": ["run", "-s", "staging"]}]
-    #     }
-    # )
-    # dbt_marts_run = CloudRunExecuteJobOperator(
-    #     task_id='dbt_marts_run',
-    #     project_id=BIGQUERY_PROJECT,
-    #     region='europe-west1',
-    #     job_name='group3-dbt',
-    #     overrides={
-    #         "container_overrides": [{"args": ["run", "-s", "marts"]}]
-    #     }
-    # )
+    dbt_debug_task = CloudRunExecuteJobOperator(
+        task_id='dbt_debug',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["debug"]}]
+        }
+    )
+    dbt_staging_run = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "staging"]}]
+        }
+    )
+    dbt_marts_run = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts"]}]
+        }
+    )
 
 
 
@@ -719,16 +719,16 @@ with DAG(
 
     recreate_historical_stop_times_table_from_teachers_task
 
-    # [
-    #     load_stops_to_bigquery_task, 
-    #     load_municipalities_to_bigquery_task, 
-    #     load_lines_to_bigquery_task, 
-    #     load_routes_to_bigquery_task, 
-    #     load_weather_data_to_bigquery_task, 
-    #     load_stop_times_bigquery_task, 
-    #     load_calendar_dates_to_bigquery_task, 
-    #     load_trips_to_bigquery_task, 
-    #     load_dates_to_bigquery_task, 
-    #     load_shapes_to_bigquery_task, 
-    #     load_periods_bigquery_task
-    # ] >> dbt_debug_task >> dbt_staging_run >> dbt_marts_run
+    [
+        load_stops_to_bigquery_task, 
+        load_municipalities_to_bigquery_task, 
+        load_lines_to_bigquery_task, 
+        load_routes_to_bigquery_task, 
+        load_weather_data_to_bigquery_task, 
+        load_stop_times_bigquery_task, 
+        load_calendar_dates_to_bigquery_task, 
+        load_trips_to_bigquery_task, 
+        load_dates_to_bigquery_task, 
+        load_shapes_to_bigquery_task, 
+        load_periods_bigquery_task
+    ] >> dbt_debug_task >> dbt_staging_run >> dbt_marts_run
