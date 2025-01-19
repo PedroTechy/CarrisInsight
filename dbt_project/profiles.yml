@@ -21,11 +21,11 @@ edit_de_project:
       location: EU
       priority: interactive
       threads: 4 # Must be a value of 1 or greater 
-    modeling:
+    marts:
       type: bigquery
       method: oauth
       project: data-eng-dev-437916
-      dataset: data_eng_project_group3_modeling
+      dataset: data_eng_project_group3_marts
       job_execution_timeout_seconds: 300
       job_retries: 1
       location: EU

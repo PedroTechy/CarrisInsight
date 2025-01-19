@@ -10,7 +10,7 @@ WITH real_times AS (
         FORMAT_TIMESTAMP('%H:%M:00', TIMESTAMP_SECONDS(MIN(timestamp))) AS real_start_time,
         FORMAT_TIMESTAMP('%H:%M:00', TIMESTAMP_SECONDS(MAX(timestamp))) AS real_end_time,
         COUNT(stop_id) AS total_stops
-    FROM {{ source('carris_api', 'raw_historical_stop_times') }} real_times_table
+    FROM {{ source('raw_dataset', 'historical_stop_times') }} real_times_table
     GROUP BY trip_id
 ),
 first_last_stop AS (
@@ -21,7 +21,7 @@ first_last_stop AS (
         ARRAY_AGG(stop_id ORDER BY timestamp ASC LIMIT 1)[OFFSET(0)] AS first_stop_id,
         -- stop_id of the last stop (based on latest timestamp)
         ARRAY_AGG(stop_id ORDER BY timestamp DESC LIMIT 1)[OFFSET(0)] AS last_stop_id
-    FROM {{ source('carris_api',  'raw_historical_stop_times') }}
+    FROM {{ source('raw_dataset',  'historical_stop_times') }}
     GROUP BY trip_id
 ),
 tabulated_times AS (
