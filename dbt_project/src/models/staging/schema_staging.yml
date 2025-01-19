@@ -47,12 +47,26 @@ models:
           - not_null
 
   - name: routes
-    description: The actual stop times of the trips
+    description: The possible routes
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: route_id
+        description: Unique identifier for the route
         tests:
           - not_null
+          - unique
+      - name: route_name
+        description: Name of the route
+        tests:
+          - not_null
+      - name: line_id
+        description: Identifier for the specific line associated with the route
+        tests:
+          - not_null
+      - name: list_municipality_name
+        description: Names of the municipalities where the route operates
+        tests:
+          - not_null
+
 
   - name: lines
     description: The actual stop times of the trips
