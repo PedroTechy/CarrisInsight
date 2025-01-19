@@ -89,9 +89,36 @@ models:
           - not_null
 
   - name: stops
-    description: The actual stop times of the trips
+    description: The existing stops
     columns:
-      - name: real_start_time
-        description: Trip start time
+      - name: stop_id
+        description: Unique identifier for the stop
         tests:
           - not_null
+          - unique
+      - name: stop_name
+        description: Name of the stop
+        tests:
+          - not_null
+      - name: municipality_id
+        description: Unique identifier for the municipality
+        tests:
+          - not_null
+      - name: municipality_name
+        description: Name of the municipality where the stop is located
+        tests:
+          - not_null
+      - name: region_name
+        description: Name of the region where the stop is located
+        tests:
+          - not_null
+      - name: list_pattern
+        description: List of patterns or schedules associated with the stop
+        tests:
+          - not_null
+      - name: operational_status
+        description: Status of the stop (e.g., "active", "inactive")
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['ACTIVE', 'INACTIVE', 'PROVISIONAL', 'VOIDED', 'SEASONAL']
