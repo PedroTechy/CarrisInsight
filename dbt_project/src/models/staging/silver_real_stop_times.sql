@@ -29,7 +29,7 @@ tabulated_times AS (
         trip_id,
         start_time AS tabulated_start_time,
         arrival_time AS tabulated_end_time
-    FROM {{ ref('silver_stop_times') }} 
+    FROM {{ ref('stop_times') }} 
 )
 SELECT
     rt.trip_id,
