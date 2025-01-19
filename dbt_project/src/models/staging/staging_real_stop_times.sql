@@ -7,8 +7,8 @@
 WITH real_times AS (
     SELECT
         trip_id,
-        FORMAT_TIMESTAMP('%H:%M:00', TIMESTAMP_SECONDS(MIN(timestamp))) AS real_start_time,
-        FORMAT_TIMESTAMP('%H:%M:00', TIMESTAMP_SECONDS(MAX(timestamp))) AS real_end_time,
+        FORMAT_TIMESTAMP('%H:%M:00', TIMESTAMP_SECONDS(MIN(UNIX_SECONDS(timestamp)))) AS real_start_time,
+        FORMAT_TIMESTAMP('%H:%M:00', TIMESTAMP_SECONDS(MAX(UNIX_SECONDS(timestamp)))) AS real_end_time,
         COUNT(stop_id) AS total_stops
     FROM {{ source('raw_dataset', 'historical_stop_times') }} real_times_table
     GROUP BY trip_id
