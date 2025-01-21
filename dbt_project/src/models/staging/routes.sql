@@ -7,4 +7,5 @@ SELECT
 FROM {{ source('raw_dataset', 'routes') }} r
 LEFT JOIN {{ source('raw_dataset', 'municipalities') }} m
     ON m.id IN UNNEST(r.municipalities)
-GROUP BY r.id, r.long_name, r.line_id
+GROUP BY r.id, r.long_name, r.line_id, r.ingested_at
+QUALIFY ROW_NUMBER() OVER (PARTITION BY r.id ORDER BY r.ingested_at DESC) = 1
