@@ -696,6 +696,46 @@ with DAG(
         }
     )
 
+    dbt_staging_weather_data_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_weather_data_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "staging.weather_data"]}]
+        }
+    )
+
+    dbt_staging_weather_data_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_weather_data_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging.weather_data"]}]
+        }
+    )
+
+    dbt_staging_trips_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_trips_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "staging.trips"]}]
+        }
+    )
+
+    dbt_staging_trips_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_trips_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging.trips"]}]
+        }
+    )
+
     dbt_staging_lines_run_task = CloudRunExecuteJobOperator(
         task_id='dbt_staging_lines_run',
         project_id=BIGQUERY_PROJECT,
@@ -877,8 +917,8 @@ with DAG(
         }
     )
 
-    dbt_fact_trips_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_fact_trips_run',
+    dbt_marts_fact_trips_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_fact_trips_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -887,8 +927,8 @@ with DAG(
         }
     )
 
-    dbt_fact_trips_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_fact_trips_test',
+    dbt_marts_fact_trips_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_fact_trips_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -913,12 +953,19 @@ with DAG(
     recreate_historical_stop_times_table_from_teachers_task >> dbt_staging_real_stop_times_run_task >> dbt_staging_real_stop_times_test_task
     load_stop_times_bigquery_task >> dbt_staging_stop_times_run_task >> dbt_staging_stop_times_test_task
     load_stops_to_bigquery_task >> dbt_staging_stops_run_task >> dbt_staging_stops_test_task
+    load_trips_to_bigquery_task >> dbt_staging_trips_run_task >> dbt_staging_trips_test_task
+    load_weather_data_to_bigquery_task >> dbt_staging_weather_data_run_task >> dbt_staging_weather_data_test_task
 
     # dbt marts tasks
-    [dbt_staging_routes_test_task, dbt_staging_lines_test_task] >> dbt_marts_dim_routes_run_task >> dbt_marts_dim_routes_test_task
+    [dbt_staging_routes_test_task, dbt_staging_lines_test_task, dbt_staging_stops_test_task] >> dbt_marts_dim_routes_run_task >> dbt_marts_dim_routes_test_task
     dbt_staging_calendar_dates_test_task >> dbt_marts_dim_calendar_dates_run_task >> dbt_marts_dim_calendar_dates_test_task
     dbt_staging_real_stop_times_test_task >> dbt_marts_dim_historical_trips_run_task >> dbt_marts_dim_historical_trips_test_task
     dbt_marts_dim_date_run_task >> dbt_marts_dim_date_test_task
     
-    [dbt_marts_dim_calendar_dates_test_task, dbt_marts_dim_date_test_task, dbt_marts_dim_historical_trips_test_task, dbt_marts_dim_routes_test_task] >> dbt_fact_trips_run_task
-    dbt_fact_trips_run_task >> dbt_fact_trips_test_task
+    [
+        dbt_marts_dim_calendar_dates_test_task, 
+        dbt_marts_dim_date_test_task, 
+        dbt_marts_dim_historical_trips_test_task, 
+        dbt_marts_dim_routes_test_task, 
+        dbt_staging_trips_test_task
+    ] >> dbt_marts_fact_trips_run_task >> dbt_marts_fact_trips_test_task
