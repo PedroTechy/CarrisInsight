@@ -1,3 +1,4 @@
+
 SELECT
     PARSE_DATE('%Y-%m-%d', dataPrevisao) AS date,
     CAST(tMax AS FLOAT64) AS max_temperature,
@@ -48,5 +49,8 @@ SELECT
         WHEN idTipoTempo = 29 THEN 'Rain and snow'
         WHEN idTipoTempo = 30 THEN 'Rain and snow'
         ELSE 'Unknown'
-    END AS weather_type
+    END AS weather_type,
+
 FROM {{ source('raw_dataset', 'weather_data') }}
+
+QUALIFY ROW_NUMBER() OVER (PARTITION BY dataPrevisao ORDER BY dataAtualiza DESC) = 1
