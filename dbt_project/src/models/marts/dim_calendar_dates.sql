@@ -1,5 +1,4 @@
 SELECT
-    FORMAT_DATE('%Y%m%d', date) as sk_date,
     date,
     day_type,
     exception_type,
