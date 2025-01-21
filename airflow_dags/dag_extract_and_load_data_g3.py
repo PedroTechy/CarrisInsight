@@ -676,8 +676,8 @@ with DAG(
     # DBT tasks
 
     # Staging file tasks
-    dbt_calendar_dates_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_calendar_dates_run',
+    dbt_staging_calendar_dates_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_calendar_dates_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -686,8 +686,8 @@ with DAG(
         }
     )
 
-    dbt_calendar_dates_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_calendar_dates_test',
+    dbt_staging_calendar_dates_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_calendar_dates_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -696,8 +696,8 @@ with DAG(
         }
     )
 
-    dbt_lines_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_lines_run',
+    dbt_staging_lines_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_lines_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -706,8 +706,8 @@ with DAG(
         }
     )
 
-    dbt_lines_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_lines_test',
+    dbt_staging_lines_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_lines_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -716,8 +716,8 @@ with DAG(
         }
     )
 
-    dbt_real_stop_times_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_real_stop_times_run',
+    dbt_staging_real_stop_times_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_real_stop_times_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -726,8 +726,8 @@ with DAG(
         }
     )
 
-    dbt_real_stop_times_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_real_stop_times_test',
+    dbt_staging_real_stop_times_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_real_stop_times_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -736,8 +736,8 @@ with DAG(
         }
     )
 
-    dbt_routes_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_routes_run',
+    dbt_staging_routes_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_routes_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -746,8 +746,8 @@ with DAG(
         }
     )
 
-    dbt_routes_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_routes_test',
+    dbt_staging_routes_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_routes_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -756,8 +756,8 @@ with DAG(
         }
     )
 
-    dbt_stop_times_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_stop_times_run',
+    dbt_staging_stop_times_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_stop_times_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -766,8 +766,8 @@ with DAG(
         }
     )
 
-    dbt_stop_times_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_stop_times_test',
+    dbt_staging_stop_times_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_stop_times_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -776,8 +776,8 @@ with DAG(
         }
     )
 
-    dbt_stops_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_stops_run',
+    dbt_staging_stops_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_stops_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -786,8 +786,8 @@ with DAG(
         }
     )
 
-    dbt_stops_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_stops_test',
+    dbt_staging_stops_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_staging_stops_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -797,8 +797,8 @@ with DAG(
     )
 
     # Marts file tasks
-    dbt_dim_calendar_dates_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_calendar_dates_run',
+    dbt_marts_dim_calendar_dates_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_calendar_dates_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -807,8 +807,8 @@ with DAG(
         }
     )
 
-    dbt_dim_calendar_dates_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_calendar_dates_test',
+    dbt_marts_dim_calendar_dates_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_calendar_dates_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -817,8 +817,8 @@ with DAG(
         }
     )
 
-    dbt_dim_date_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_date_run',
+    dbt_marts_dim_date_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_date_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -827,8 +827,8 @@ with DAG(
         }
     )
 
-    dbt_dim_date_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_date_test',
+    dbt_marts_dim_date_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_date_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -837,8 +837,8 @@ with DAG(
         }
     )
 
-    dbt_dim_historical_trips_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_historical_trips_run',
+    dbt_marts_dim_historical_trips_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_historical_trips_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -847,8 +847,8 @@ with DAG(
         }
     )
 
-    dbt_dim_historical_trips_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_historical_trips_test',
+    dbt_marts_dim_historical_trips_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_historical_trips_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -857,8 +857,8 @@ with DAG(
         }
     )
 
-    dbt_dim_routes_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_routes_run',
+    dbt_marts_dim_routes_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_routes_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -867,8 +867,8 @@ with DAG(
         }
     )
 
-    dbt_dim_routes_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_dim_routes_test',
+    dbt_marts_dim_routes_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_routes_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
@@ -907,18 +907,18 @@ with DAG(
     recreate_historical_stop_times_table_from_teachers_task
 
     # dbt staging tasks
-    [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_routes_run_task >> dbt_routes_test_task
-    [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_calendar_dates_run_task >> dbt_calendar_dates_test_task
-    load_lines_to_bigquery_task >> dbt_lines_run_task >> dbt_lines_test_task
-    recreate_historical_stop_times_table_from_teachers_task >> dbt_real_stop_times_run_task >> dbt_real_stop_times_test_task
-    load_stop_times_bigquery_task >> dbt_stop_times_run_task >> dbt_stop_times_test_task
-    load_stops_to_bigquery_task >> dbt_stops_run_task >> dbt_stops_test_task
+    [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_staging_routes_run_task >> dbt_staging_routes_test_task
+    [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_staging_calendar_dates_run_task >> dbt_staging_calendar_dates_test_task
+    load_lines_to_bigquery_task >> dbt_staging_lines_run_task >> dbt_staging_lines_test_task
+    recreate_historical_stop_times_table_from_teachers_task >> dbt_staging_real_stop_times_run_task >> dbt_staging_real_stop_times_test_task
+    load_stop_times_bigquery_task >> dbt_staging_stop_times_run_task >> dbt_staging_stop_times_test_task
+    load_stops_to_bigquery_task >> dbt_staging_stops_run_task >> dbt_staging_stops_test_task
 
     # dbt marts tasks
-    [dbt_routes_test_task, dbt_lines_test_task] >> dbt_dim_routes_run_task >> dbt_dim_routes_test_task
-    dbt_calendar_dates_test_task >> dbt_dim_calendar_dates_run_task >> dbt_dim_calendar_dates_test_task
-    dbt_real_stop_times_test_task >> dbt_dim_historical_trips_run_task >> dbt_dim_historical_trips_test_task
-    dbt_dim_date_run_task >> dbt_dim_date_test_task
+    [dbt_staging_routes_test_task, dbt_staging_lines_test_task] >> dbt_marts_dim_routes_run_task >> dbt_marts_dim_routes_test_task
+    dbt_staging_calendar_dates_test_task >> dbt_marts_dim_calendar_dates_run_task >> dbt_marts_dim_calendar_dates_test_task
+    dbt_staging_real_stop_times_test_task >> dbt_marts_dim_historical_trips_run_task >> dbt_marts_dim_historical_trips_test_task
+    dbt_marts_dim_date_run_task >> dbt_marts_dim_date_test_task
     
-    [dbt_dim_calendar_dates_test_task, dbt_dim_date_test_task, dbt_dim_historical_trips_test_task, dbt_dim_routes_test_task] >> dbt_fact_trips_run_task
+    [dbt_marts_dim_calendar_dates_test_task, dbt_marts_dim_date_test_task, dbt_marts_dim_historical_trips_test_task, dbt_marts_dim_routes_test_task] >> dbt_fact_trips_run_task
     dbt_fact_trips_run_task >> dbt_fact_trips_test_task
