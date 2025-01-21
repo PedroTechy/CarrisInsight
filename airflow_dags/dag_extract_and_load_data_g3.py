@@ -897,7 +897,7 @@ with DAG(
         }
     )
 
-
+    # Extraction and load tasks
     extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
     extract_municipalities_and_upload_to_bucket_task >> load_municipalities_to_bigquery_task
     extract_lines_and_upload_to_bucket_task >> load_lines_to_bigquery_task
@@ -906,21 +906,19 @@ with DAG(
     extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
     recreate_historical_stop_times_table_from_teachers_task
 
-    [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_routes_run_task
-    [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_calendar_dates_run_task
+    # dbt staging tasks
+    [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_routes_run_task >> dbt_routes_test_task
+    [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_calendar_dates_run_task >> dbt_calendar_dates_test_task
+    load_lines_to_bigquery_task >> dbt_lines_run_task >> dbt_lines_test_task
+    recreate_historical_stop_times_table_from_teachers_task >> dbt_real_stop_times_run_task >> dbt_real_stop_times_test_task
+    load_stop_times_bigquery_task >> dbt_stop_times_run_task >> dbt_stop_times_test_task
+    load_stops_to_bigquery_task >> dbt_stops_run_task >> dbt_stops_test_task
 
-    dbt_calendar_dates_run_task >> dbt_calendar_dates_test_task
-    dbt_lines_run_task >> dbt_lines_test_task
-    dbt_real_stop_times_run_task >> dbt_real_stop_times_test_task
-    dbt_routes_run_task >> dbt_routes_test_task
-    dbt_stop_times_run_task >> dbt_stop_times_test_task
-    dbt_stops_run_task >> dbt_stops_test_task
-
-    # [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_routes_run_task
-    # [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_calendar_dates_run_task
-
-    dbt_dim_calendar_dates_run_task >> dbt_dim_calendar_dates_test_task
+    # dbt marts tasks
+    [dbt_routes_test_task, dbt_lines_test_task] >> dbt_dim_routes_run_task >> dbt_dim_routes_test_task
+    dbt_calendar_dates_test_task >> dbt_dim_calendar_dates_run_task >> dbt_dim_calendar_dates_test_task
+    dbt_real_stop_times_test_task >> dbt_dim_historical_trips_run_task >> dbt_dim_historical_trips_test_task
     dbt_dim_date_run_task >> dbt_dim_date_test_task
-    dbt_dim_historical_trips_run_task >> dbt_dim_historical_trips_test_task
-    dbt_dim_routes_run_task >> dbt_dim_routes_test_task
+    
+    [dbt_dim_calendar_dates_test_task, dbt_dim_date_test_task, dbt_dim_historical_trips_test_task, dbt_dim_routes_test_task] >> dbt_fact_trips_run_task
     dbt_fact_trips_run_task >> dbt_fact_trips_test_task
