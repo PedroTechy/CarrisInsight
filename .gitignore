@@ -1,1 +1,7 @@
 /dbt_project/
+*.crc
+*.parquet
+*.delta
+*.snapshot
+content/
+__pycache__
