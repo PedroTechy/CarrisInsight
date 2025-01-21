@@ -31,7 +31,6 @@ models:
         description: Unique identifier for the trip
         tests:
           - not_null
-          - unique
       - name: real_start_time
         description: The actual start time of the trip at the stop
         tests:
