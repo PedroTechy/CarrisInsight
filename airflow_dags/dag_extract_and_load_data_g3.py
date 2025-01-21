@@ -663,7 +663,7 @@ with DAG(
     recreate_historical_stop_times_table_from_teachers_task = PythonOperator(
         task_id='recreate_historical_stop_times_table_from_teachers',
         python_callable=recreate_historical_stop_times_table_from_teachers,
-        op_args=[BIGQUERY_PROJECT, BIGQUERY_DATASET, True],
+        op_args=[BIGQUERY_PROJECT, BIGQUERY_DATASET],
         provide_context = True
     )
 
