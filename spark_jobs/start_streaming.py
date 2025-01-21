@@ -46,6 +46,6 @@ query = (result_df.writeStream
          .start('content/lake/processing/vehicles/data')
          )
 
-query.awaitTermination(90)
+query.awaitTermination(300)
 
 query.stop()
