@@ -3,7 +3,6 @@ SELECT
     day_type,
     exception_type,
     holiday,
-    period,
     period_name,
     service_id,
     CURRENT_TIMESTAMP() AS ingested_at

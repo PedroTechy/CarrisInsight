@@ -13,8 +13,9 @@ SELECT DISTINCT
     st.scheduled_start_time AS planned_start_time,
     st.scheduled_end_time AS planned_end_time,
     td.service_date as planned_date,
+    td.service_date as sk_date,
     st.shape_dist_traveled AS total_distance_traveled,
-    dr.sk_routes AS route_key,
+    dr.sk_routes AS sk_routes,
     st.shape_dist_traveled * 0.001 / 
     (CASE 
         WHEN st.scheduled_end_time < st.scheduled_start_time 
