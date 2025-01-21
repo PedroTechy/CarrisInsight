@@ -906,7 +906,8 @@ with DAG(
     extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
     recreate_historical_stop_times_table_from_teachers_task
 
-    #TO ADD CONN BETWEEN above and below []
+    [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_routes_run_task
+    [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_calendar_dates_run_task
 
     dbt_calendar_dates_run_task >> dbt_calendar_dates_test_task
     dbt_lines_run_task >> dbt_lines_test_task
@@ -914,6 +915,9 @@ with DAG(
     dbt_routes_run_task >> dbt_routes_test_task
     dbt_stop_times_run_task >> dbt_stop_times_test_task
     dbt_stops_run_task >> dbt_stops_test_task
+
+    # [load_municipalities_to_bigquery_task, load_routes_to_bigquery_task] >> dbt_routes_run_task
+    # [load_calendar_dates_to_bigquery_task, load_periods_bigquery_task] >> dbt_calendar_dates_run_task
 
     dbt_dim_calendar_dates_run_task >> dbt_dim_calendar_dates_test_task
     dbt_dim_date_run_task >> dbt_dim_date_test_task
