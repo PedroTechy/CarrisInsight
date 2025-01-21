@@ -4,7 +4,7 @@ models:
   - name: dim_routes
     description: Routes dimension table
     columns:
-      - name: route_sk
+      - name: sk_routes
         description: Surrogate key for route
         tests:
           - unique
