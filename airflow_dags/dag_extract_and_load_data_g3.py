@@ -851,6 +851,26 @@ with DAG(
         }
     )
 
+    dbt_marts_dim_weather_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_weather_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts.dim_weather"]}]
+        }
+    )
+
+    dbt_marts_dim_weather_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_marts_dim_weather_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts.dim_weather"]}]
+        }
+    )
+
     dbt_marts_dim_date_run_task = CloudRunExecuteJobOperator(
         task_id='dbt_marts_dim_date_run',
         project_id=BIGQUERY_PROJECT,
@@ -955,6 +975,7 @@ with DAG(
     dbt_staging_calendar_dates_test_task >> dbt_marts_dim_calendar_dates_run_task >> dbt_marts_dim_calendar_dates_test_task
     dbt_staging_real_stop_times_test_task >> dbt_marts_dim_historical_trips_run_task >> dbt_marts_dim_historical_trips_test_task
     dbt_marts_dim_date_run_task >> dbt_marts_dim_date_test_task
+    dbt_staging_weather_data_test_task >> dbt_marts_dim_weather_run_task
     
     [
         dbt_marts_dim_calendar_dates_test_task, 
