@@ -1,5 +1,5 @@
 
--- add column that says if trip was delayed 
+--Ines: TODO add column that says if trip was delayed 
 
 SELECT 
     trip_id,

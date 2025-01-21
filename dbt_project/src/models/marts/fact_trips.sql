@@ -32,3 +32,5 @@ LEFT JOIN {{ ref('dim_routes') }} dr
     ON t.route_id = dr.route_id
 LEFT JOIN trip_dates td
     ON td.trip_id = st.trip_id
+
+    --TODO: add total stops and total trip time Pedro
