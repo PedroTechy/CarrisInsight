@@ -638,19 +638,19 @@ with DAG(
         provide_context = True
     )
 
-    load_dates_to_bigquery_task = PythonOperator(
-        task_id='load_dates_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "dates", "csv"], 
-        provide_context = True
-    )
+    # load_dates_to_bigquery_task = PythonOperator(
+    #     task_id='load_dates_to_bigquery',
+    #     python_callable=load_tables_from_bucket_to_bigquery,
+    #     op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "dates", "csv"], 
+    #     provide_context = True
+    # )
 
-    load_shapes_to_bigquery_task = PythonOperator(
-        task_id='load_shapes_to_bigquery',
-        python_callable=load_tables_from_bucket_to_bigquery,
-        op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "shapes", "csv"], 
-        provide_context = True
-    )
+    # load_shapes_to_bigquery_task = PythonOperator(
+    #     task_id='load_shapes_to_bigquery',
+    #     python_callable=load_tables_from_bucket_to_bigquery,
+    #     op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "shapes", "csv"], 
+    #     provide_context = True
+    # )
 
     load_periods_bigquery_task = PythonOperator(
         task_id='load_periods_to_bigquery',
@@ -943,7 +943,7 @@ with DAG(
     extract_lines_and_upload_to_bucket_task >> load_lines_to_bigquery_task
     extract_routes_and_upload_to_bucket_task >> load_routes_to_bigquery_task
     extract_and_store_weather_data_task >> load_weather_data_to_bigquery_task
-    extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
+    extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_periods_bigquery_task] # Unused: load_shapes_to_bigquery_task, load_dates_to_bigquery_task
     recreate_historical_stop_times_table_from_teachers_task
 
     # dbt staging tasks
@@ -967,5 +967,6 @@ with DAG(
         dbt_marts_dim_date_test_task, 
         dbt_marts_dim_historical_trips_test_task, 
         dbt_marts_dim_routes_test_task, 
-        dbt_staging_trips_test_task
+        dbt_staging_trips_test_task,
+        dbt_staging_stop_times_test_task
     ] >> dbt_marts_fact_trips_run_task >> dbt_marts_fact_trips_test_task
