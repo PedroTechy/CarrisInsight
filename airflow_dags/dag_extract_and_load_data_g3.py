@@ -675,81 +675,248 @@ with DAG(
 
     # DBT tasks
 
-    dbt_debug_task = CloudRunExecuteJobOperator(
-        task_id='dbt_debug',
+    # Staging file tasks
+    dbt_calendar_dates_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_calendar_dates_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
         overrides={
-            "container_overrides": [{"args": ["debug"]}]
+            "container_overrides": [{"args": ["run", "-s", "staging.calendar_dates"]}]
         }
     )
 
-    dbt_staging_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_staging_run',
+    dbt_calendar_dates_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_calendar_dates_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
         overrides={
-            "container_overrides": [{"args": ["run", "-s", "staging"]}]
+            "container_overrides": [{"args": ["test", "-s", "staging.calendar_dates"]}]
         }
     )
 
-    dbt_staging_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_staging_test',
+    dbt_lines_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_lines_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
         overrides={
-            "container_overrides": [{"args": ["test", "-s", "staging"]}]
+            "container_overrides": [{"args": ["run", "-s", "staging.lines"]}]
         }
     )
 
-    dbt_marts_run_task = CloudRunExecuteJobOperator(
-        task_id='dbt_marts_run',
+    dbt_lines_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_lines_test',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
         overrides={
-            "container_overrides": [{"args": ["run", "-s", "marts"]}]
+            "container_overrides": [{"args": ["test", "-s", "staging.lines"]}]
         }
     )
-    
-    dbt_marts_test_task = CloudRunExecuteJobOperator(
-        task_id='dbt_marts_test',
+
+    dbt_real_stop_times_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_real_stop_times_run',
         project_id=BIGQUERY_PROJECT,
         region='europe-west1',
         job_name='group3-dbt',
         overrides={
-            "container_overrides": [{"args": ["test", "-s", "marts"]}]
+            "container_overrides": [{"args": ["run", "-s", "staging.real_stop_times"]}]
+        }
+    )
+
+    dbt_real_stop_times_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_real_stop_times_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging.real_stop_times"]}]
+        }
+    )
+
+    dbt_routes_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_routes_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "staging.routes"]}]
+        }
+    )
+
+    dbt_routes_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_routes_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging.routes"]}]
+        }
+    )
+
+    dbt_stop_times_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_stop_times_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "staging.stop_times"]}]
+        }
+    )
+
+    dbt_stop_times_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_stop_times_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging.stop_times"]}]
+        }
+    )
+
+    dbt_stops_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_stops_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "staging.stops"]}]
+        }
+    )
+
+    dbt_stops_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_stops_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "staging.stops"]}]
+        }
+    )
+
+    # Marts file tasks
+    dbt_dim_calendar_dates_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_calendar_dates_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts.dim_calendar_dates"]}]
+        }
+    )
+
+    dbt_dim_calendar_dates_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_calendar_dates_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts.dim_calendar_dates"]}]
+        }
+    )
+
+    dbt_dim_date_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_date_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts.dim_date"]}]
+        }
+    )
+
+    dbt_dim_date_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_date_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts.dim_date"]}]
+        }
+    )
+
+    dbt_dim_historical_trips_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_historical_trips_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts.dim_historical_trips"]}]
+        }
+    )
+
+    dbt_dim_historical_trips_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_historical_trips_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts.dim_historical_trips"]}]
+        }
+    )
+
+    dbt_dim_routes_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_routes_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts.dim_routes"]}]
+        }
+    )
+
+    dbt_dim_routes_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_dim_routes_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts.dim_routes"]}]
+        }
+    )
+
+    dbt_fact_trips_run_task = CloudRunExecuteJobOperator(
+        task_id='dbt_fact_trips_run',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["run", "-s", "marts.fact_trips"]}]
+        }
+    )
+
+    dbt_fact_trips_test_task = CloudRunExecuteJobOperator(
+        task_id='dbt_fact_trips_test',
+        project_id=BIGQUERY_PROJECT,
+        region='europe-west1',
+        job_name='group3-dbt',
+        overrides={
+            "container_overrides": [{"args": ["test", "-s", "marts.fact_trips"]}]
         }
     )
 
 
     extract_stops_and_upload_to_bucket_task >> load_stops_to_bigquery_task
-
     extract_municipalities_and_upload_to_bucket_task >> load_municipalities_to_bigquery_task
-
     extract_lines_and_upload_to_bucket_task >> load_lines_to_bigquery_task
-
     extract_routes_and_upload_to_bucket_task >> load_routes_to_bigquery_task
-
     extract_and_store_weather_data_task >> load_weather_data_to_bigquery_task
-
     extract_and_upload_zip_task >>  [load_stop_times_bigquery_task, load_calendar_dates_to_bigquery_task, load_trips_to_bigquery_task, load_dates_to_bigquery_task, load_shapes_to_bigquery_task, load_periods_bigquery_task]
-
     recreate_historical_stop_times_table_from_teachers_task
 
-    [
-        load_stops_to_bigquery_task, 
-        load_municipalities_to_bigquery_task, 
-        load_lines_to_bigquery_task, 
-        load_routes_to_bigquery_task, 
-        load_weather_data_to_bigquery_task, 
-        load_stop_times_bigquery_task, 
-        load_calendar_dates_to_bigquery_task, 
-        load_trips_to_bigquery_task, 
-        load_dates_to_bigquery_task, 
-        load_shapes_to_bigquery_task, 
-        load_periods_bigquery_task
-    ] >> dbt_debug_task >> dbt_staging_run_task >> dbt_staging_test_task >> dbt_marts_run_task >> dbt_marts_test_task
+    #TO ADD CONN BETWEEN above and below []
+
+    dbt_calendar_dates_run_task >> dbt_calendar_dates_test_task
+    dbt_lines_run_task >> dbt_lines_test_task
+    dbt_real_stop_times_run_task >> dbt_real_stop_times_test_task
+    dbt_routes_run_task >> dbt_routes_test_task
+    dbt_stop_times_run_task >> dbt_stop_times_test_task
+    dbt_stops_run_task >> dbt_stops_test_task
+
+    dbt_dim_calendar_dates_run_task >> dbt_dim_calendar_dates_test_task
+    dbt_dim_date_run_task >> dbt_dim_date_test_task
+    dbt_dim_historical_trips_run_task >> dbt_dim_historical_trips_test_task
+    dbt_dim_routes_run_task >> dbt_dim_routes_test_task
+    dbt_fact_trips_run_task >> dbt_fact_trips_test_task
