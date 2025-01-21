@@ -271,13 +271,14 @@ def load_dataframe_to_bigquery(dataframe: pd.DataFrame,
 
         # Verify is a table exists and if yes add only new lines 
         upload_dataframe = get_diff(client, dataframe, table_id)
+        timed_upload_dataframe = upload_dataframe.assign(ingested_at=datetime.now())
 
         job_config = bigquery.LoadJobConfig(
             autodetect=True,  # Automatically infers schema
         )
 
         # As we load the table as dataframes objects, we can use this method
-        load_job = client.load_table_from_dataframe(upload_dataframe, table_id, job_config=job_config)
+        load_job = client.load_table_from_dataframe(timed_upload_dataframe, table_id, job_config=job_config)
         load_job.result()  # Wait for the job to complete
         logging.info(f"Successfully loaded data into {table_id} with success") 
         return True
@@ -314,7 +315,7 @@ def extract_and_store_json_data(base_url: str,
         upload_blob_from_memory(BUCKET_NAME,file_content,target_file_path)
     except:
         # added a generic exception to catch any error for a specific file without stopping the loop.
-        logging.error(f"Error when trying to handle {target_file_path}. File has been skipped")
+        logging.error(f"Error when trying to handle {endpoint}. File has been skipped")
 
 def extract_and_store_weather_data(base_url: str,
                                   endpoint: str, 
@@ -490,7 +491,6 @@ def load_tables_from_bucket_to_bigquery(bucket_name: str,
 def recreate_historical_stop_times_table_from_teachers(
     project_id: str,
     dataset_id: str,
-    is_weekly: bool = True,
     **context: dict) -> bool:
     """
     Recreates a table from teachers project (historical_stop_times) with option for weekly execution.
@@ -498,14 +498,8 @@ def recreate_historical_stop_times_table_from_teachers(
     Args:
         project_id: Destination project ID
         dataset_id: Destination dataset ID
-        is_weekly: If True, only runs on Mondays
         context: Airflow context
     """
-    # check if it's a weekly task and if it's not Wednesday (could be any other day, the idea is that we don't need to run this every day)
-    if is_weekly and context['execution_date'].weekday() != 2:
-        logging.info("Not Wednesday, skipping weekly task of loading historical stop times")
-        return False
-
     try:
         client = bigquery.Client(project=project_id)
         
