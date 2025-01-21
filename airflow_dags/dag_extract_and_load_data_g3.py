@@ -975,7 +975,7 @@ with DAG(
     dbt_staging_calendar_dates_test_task >> dbt_marts_dim_calendar_dates_run_task >> dbt_marts_dim_calendar_dates_test_task
     dbt_staging_real_stop_times_test_task >> dbt_marts_dim_historical_trips_run_task >> dbt_marts_dim_historical_trips_test_task
     dbt_marts_dim_date_run_task >> dbt_marts_dim_date_test_task
-    dbt_staging_weather_data_test_task >> dbt_marts_dim_weather_run_task
+    dbt_staging_weather_data_test_task >> dbt_marts_dim_weather_run_task >> dbt_marts_dim_weather_test_task
     
     [
         dbt_marts_dim_calendar_dates_test_task, 
