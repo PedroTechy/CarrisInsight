@@ -34,7 +34,9 @@ print("Transformed data")
 
 # Group by vehicle ID and window, then get the first and last timestamps and lat/lon values
 result_df = (
-    transformed_df.transform(utils.aggregate_data).transform(
+    transformed_df
+    .transform(utils.aggregate_data)
+    .transform(
         utils.calculate_distances)
 
 )
