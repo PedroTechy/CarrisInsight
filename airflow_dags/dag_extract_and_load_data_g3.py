@@ -632,20 +632,6 @@ with DAG(
         provide_context = True
     )
 
-    # load_dates_to_bigquery_task = PythonOperator(
-    #     task_id='load_dates_to_bigquery',
-    #     python_callable=load_tables_from_bucket_to_bigquery,
-    #     op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "dates", "csv"], 
-    #     provide_context = True
-    # )
-
-    # load_shapes_to_bigquery_task = PythonOperator(
-    #     task_id='load_shapes_to_bigquery',
-    #     python_callable=load_tables_from_bucket_to_bigquery,
-    #     op_args=[BUCKET_NAME, BIGQUERY_PROJECT, BIGQUERY_DATASET, "shapes", "csv"], 
-    #     provide_context = True
-    # )
-
     load_periods_bigquery_task = PythonOperator(
         task_id='load_periods_to_bigquery',
         python_callable=load_tables_from_bucket_to_bigquery,
