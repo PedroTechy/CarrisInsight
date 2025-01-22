@@ -15,6 +15,7 @@ SELECT DISTINCT
     td.service_date as planned_date,
     td.service_date as sk_date,
     st.shape_dist_traveled AS total_distance_traveled,
+    st.number_of_stops,
     dr.sk_routes AS sk_routes,
     st.shape_dist_traveled * 0.001 / 
     (CASE 
