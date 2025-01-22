@@ -39,8 +39,9 @@ final_selection as (
     FROM filtered_with_times f
     JOIN total_stops ts
     ON f.trip_id = ts.trip_id
+  QUALIFY ROW_NUMBER() OVER (PARTITION BY trip_id ORDER BY stop_sequence DESC) = 1
+
 )
 
 SELECT *
 FROM final_selection
-QUALIFY ROW_NUMBER() OVER (PARTITION BY trip_id ORDER BY stop_sequence DESC) = 1
