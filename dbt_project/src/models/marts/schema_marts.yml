@@ -1,30 +1,98 @@
 version: 2
 
 models:
-  - name: dim_routes
-    description: Routes dimension table
+version: 2
+
+models:
+  - name: fact_trips
+    description: "Fact table for trip schedules including planned times, dates, distances, and average speed."
     columns:
+      - name: trip_id
+        description: "Identifier for the trip."
+        tests:
+          - not_null
+      - name: planned_start_time
+        description: "Scheduled start time for the trip."
+        tests:
+          - not_null
+      - name: planned_end_time
+        description: "Scheduled end time for the trip."
+        tests:
+          - not_null 
+      - name: planned_date
+        description: "Planned service date for the trip."
+        tests:
+          - not_null 
+      - name: sk_date
+        description: "Surrogate key for the date."
+        tests:
+          - not_null
+      - name: total_distance_traveled
+        description: "Total distance traveled for the trip."
+        tests:
+          - not_null
+          - minimum_value:
+              min_value: 0
+      - name: number_of_stops
+        description: "Total number of stops for the trip."
+        tests:
+          - not_null
+          - minimum_value:
+              min_value: 0
       - name: sk_routes
-        description: Surrogate key for route
+        description: "Surrogate key for routes."
         tests:
-          - unique
           - not_null
+      - name: average_speed_kmh
+        description: "Average speed of the trip in kilometers per hour."
+        tests:
+          - not_null
+          - minimum_value:
+              min_value: 0
+      - name: direction
+        description: "Direction of the trip (0 or 1)."
+        tests:
+          - not_null
+
+  - name: dim_routes
+    columns:
       - name: route_id
-        description: Natural key - route identifier
         tests:
           - unique
           - not_null
-      - name: route_long_name
-        description: Route long name
       - name: line_id
-        description: Line identifier
-      - name: line_long_name
-        description: Line long name
-      - name: municipalities_id_name
-        description: Semicolon-separated list of municipality_ids and municipality_name - 1002_Alges1; 1003_Fama and so on
-      - name: stops_names
-        description: Semicolon-separated list of stop_ids and stop_names - 1001_Alfandega; 1002_Covas and so on
-  
+        tests:
+          - not_null
+      - name: route_name
+        tests:
+          - not_null
+      - name: line_name
+        tests:
+          - not_null
+      - name: list_municipality_name
+        tests:
+          - not_null
+
+models:
+  - name: dim_historical_trips
+    columns:
+      - name: trip_id
+        tests:
+          - unique
+          - not_null
+      
+      - name: real_start_time
+        tests:
+          - not_null
+
+      - name: real_end_time
+        tests:
+          - not_null
+
+      - name: trip_date
+        tests:
+          - not_null
+
   - name: dim_date
     description: Dimension table about the date.
     columns:
