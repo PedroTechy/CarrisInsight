@@ -13,7 +13,6 @@ SELECT DISTINCT
     st.scheduled_start_time AS planned_start_time,
     st.scheduled_end_time AS planned_end_time,
     td.service_date as planned_date,
-    td.service_date as sk_date,
     st.shape_dist_traveled AS total_distance_traveled,
     st.number_of_stops,
     dr.sk_routes AS sk_routes,
@@ -32,3 +31,5 @@ LEFT JOIN {{ ref('dim_routes') }} dr
     ON t.route_id = dr.route_id
 LEFT JOIN trip_dates td
     ON td.trip_id = st.trip_id
+
+    --TODO: add total stops and total trip time Pedro

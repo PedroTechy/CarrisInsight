@@ -168,3 +168,5 @@ models:
         description: End date of the year.
       - name: ingested_at
         description: Timestamp when the data was ingested.
+
+--TODO: Add tests to the marts Pedro
