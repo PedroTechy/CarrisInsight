@@ -166,7 +166,14 @@ models:
         description: Start date of the year.
       - name: year_end_date
         description: End date of the year.
+      - name: day_type
+        description: Type of day (e.g., weekday, weekend)
+      - name: exception_type
+        description: Exception type for the date
+      - name: holiday
+        description: Indicates if the date is a holiday
+      - name: period_name
+        description: Time period classification
       - name: ingested_at
         description: Timestamp when the data was ingested.
-
---TODO: Add tests to the marts Pedro
+      
