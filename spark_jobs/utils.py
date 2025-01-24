@@ -1,7 +1,6 @@
-from pyspark import SparkConf
-from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType, LongType
-from pyspark.sql.functions import min, max, first, last, col, window, from_unixtime, to_timestamp, count, udf
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.types import StructType, StructField, StringType, FloatType, LongType
+from pyspark.sql.functions import min, max, first, last, col, window, udf
 import pyspark.sql.functions as F
 import math
 import requests
@@ -26,7 +25,20 @@ schema = StructType([
 ])
 
 
-def haversine(lat1, lon1, lat2, lon2):
+@udf(returnType=FloatType())
+def haversine(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """
+    Calculate the great-circle distance between two points on the Earth's surface using the Haversine formula.
+
+    Parameters:
+    lat1 (float): Latitude of the first point in decimal degrees.
+    lon1 (float): Longitude of the first point in decimal degrees.
+    lat2 (float): Latitude of the second point in decimal degrees.
+    lon2 (float): Longitude of the second point in decimal degrees.
+
+    Returns:
+    float: Distance between the two points in kilometers.
+    """
     try:
         # Earth radius in kilometers
         R = 6371.0
@@ -51,10 +63,21 @@ def haversine(lat1, lon1, lat2, lon2):
         return 0
 
 
-haversine_udf = udf(haversine, FloatType())
+def haversine_without_udf(df: DataFrame, lat_1: str, lat_2: str, long_1: str, long_2: str) -> DataFrame:
+    """
+    Calculate the great-circle distance between two points on the Earth's surface using the Haversine formula
+    without using a UDF (User Defined Function) in a PySpark DataFrame.
 
+    Parameters:
+    df (DataFrame): The input PySpark DataFrame containing the latitude and longitude columns.
+    lat_1 (str): The name of the column containing the latitude of the first point.
+    lat_2 (str): The name of the column containing the latitude of the second point.
+    long_1 (str): The name of the column containing the longitude of the first point.
+    long_2 (str): The name of the column containing the longitude of the second point.
 
-def haversine_without_udf(df, lat_1, lat_2, long_1, long_2):
+    Returns:
+    DataFrame: The input DataFrame with an additional column "distance" containing the calculated distances in kilometers.
+    """
     dist_df = (df
                .withColumn(
                    "distance",
@@ -80,7 +103,16 @@ def haversine_without_udf(df, lat_1, lat_2, long_1, long_2):
     return dist_df
 
 
-def aggregate_data(df):
+def aggregate_data(df: DataFrame) -> DataFrame:
+    """
+    Aggregate data in a PySpark DataFrame using a sliding window.
+
+    Parameters:
+    df (DataFrame): The input PySpark DataFrame containing the data to be aggregated.
+
+    Returns:
+    DataFrame: The transformed DataFrame with aggregated data.
+    """
     window_spec = window("timestamp", "2 minutes", "30 seconds")
 
     transformed = (df.withWatermark("timestamp", "3 minutes")
@@ -100,22 +132,39 @@ def aggregate_data(df):
     return transformed
 
 
-def calculate_distances_udf(df):
+def calculate_distances_udf(df: DataFrame) -> DataFrame:
+    """
+    Transform the data in a PySpark DataFrame by calculating the distance, time delta, and average speed.
+
+    Parameters:
+    df (DataFrame): The input PySpark DataFrame containing the data to be transformed.
+
+    Returns:
+    DataFrame: The transformed DataFrame with additional columns for distance, time delta, and average speed.
+    """
     dist_df = (df
                .withColumn(
                    "distance",
-                   haversine_udf(col("first_lat"), col("first_lon"), col("last_lat"), col("last_lon")
+                   haversine(col("first_lat"), col("first_lon"), col("last_lat"), col("last_lon")
                                  ))
                .withColumn(
                    "time_delta", col("last_timestamp").cast(
                        "long") - col("first_timestamp").cast("long")
                ).withColumn("average_speed", col("distance") / (col("time_delta") / 3600))
                )
-    print("ended transform")
-
     return dist_df
 
-def calculate_distances(df):
+
+def calculate_distances(df: DataFrame) -> DataFrame:    
+    """
+    Transform the data in a PySpark DataFrame by calculating the distance, time delta, and average speed.
+
+    Parameters:
+    df (DataFrame): The input PySpark DataFrame containing the data to be transformed.
+
+    Returns:
+    DataFrame: The transformed DataFrame with additional columns for distance, time delta, and average speed.
+    """
     dist_df = (df
                .transform(haversine_without_udf, 'first_lat', 'first_lon', 'last_lat', 'last_lon')
                .withColumn(
@@ -123,12 +172,19 @@ def calculate_distances(df):
                        "long") - col("first_timestamp").cast("long")
                ).withColumn("average_speed", col("distance") / (col("time_delta") / 3600))
                )
-    print("ended transform")
-
     return dist_df
 
 
-def get_stops(spark):
+def get_stops(spark: SparkSession) -> DataFrame:
+    """
+    Fetch stop data from the Carris Metropolitana API and create a PySpark DataFrame.
+
+    Parameters:
+    spark (SparkSession): The Spark session to use for creating the DataFrame.
+
+    Returns:
+    DataFrame: A PySpark DataFrame containing stop_id, stop_lat, and stop_lon columns.
+    """
     url = f"https://api.carrismetropolitana.pt/stops"
     response = requests.get(url)
 
