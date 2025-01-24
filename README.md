@@ -83,6 +83,18 @@ Requirements
 Run python script 
 - python3 airflow_dags/upload_data.py  <bucket-name> <source-file-name> <target-file-name>
 
+## DBT build commands
+
+docker build . --tag <docker_user>/edit-de-project-dbt:<version_tag>
+docker push <docker_user>/edit-de-project-dbt:<version_tag>
+
+To create cloud job:
+gcloud run jobs create group3-dbt --image <docker_user>/edit-de-project-dbt:<version_tag> --task-timeout 60m --region europe-west1 --memory 2Gi --service-account <provided_service_account>
+
+To update existing cloud jub:
+
+gcloud run jobs update group3-dbt --image <docker_user>/edit-de-project-dbt:<version_tag> --task-timeout 60m --region europe-west1 --memory 2Gi --service-account <provided_service_account>
+
 
 ## Queries to be answered
 
