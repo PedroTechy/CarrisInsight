@@ -2,6 +2,7 @@ from pyspark import SparkConf
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType, LongType
 from pyspark.sql.functions import min, max, first, last, col, window, from_unixtime, to_timestamp, count, udf
+import pyspark.sql.functions as F
 import math
 import requests
 import json
@@ -53,6 +54,32 @@ def haversine(lat1, lon1, lat2, lon2):
 haversine_udf = udf(haversine, FloatType())
 
 
+def haversine_without_udf(df, lat_1, lat_2, long_1, long_2):
+    dist_df = (df
+               .withColumn(
+                   "distance",
+                   6371.0 * (2 * F.atan2(
+                       F.sqrt(
+
+                           F.sin(
+                               (F.radians(col(lat_2)) - F.radians(col(lat_1))) / 2)**2 +
+
+                           F.cos(F.radians(col(lat_1))) * F.cos(F.radians(col(lat_2))) *
+                           F.sin((F.radians(col(long_2)) -
+                                  F.radians(col(long_1)))/2)**2
+
+                       ),
+                       F.sqrt(1 - (F.sin(
+                           (F.radians(col(lat_2)) - F.radians(col(lat_1))) / 2)**2 +
+
+                           F.cos(F.radians(col(lat_1))) * F.cos(F.radians(col(lat_2))) *
+                           F.sin((F.radians(col(long_2)) - F.radians(col(long_1)))/2)**2))))
+               )
+
+               )
+    return dist_df
+
+
 def aggregate_data(df):
     window_spec = window("timestamp", "2 minutes", "30 seconds")
 
@@ -73,12 +100,24 @@ def aggregate_data(df):
     return transformed
 
 
-def calculate_distances(df):
+def calculate_distances_udf(df):
     dist_df = (df
                .withColumn(
                    "distance",
                    haversine_udf(col("first_lat"), col("first_lon"), col("last_lat"), col("last_lon")
                                  ))
+               .withColumn(
+                   "time_delta", col("last_timestamp").cast(
+                       "long") - col("first_timestamp").cast("long")
+               ).withColumn("average_speed", col("distance") / (col("time_delta") / 3600))
+               )
+    print("ended transform")
+
+    return dist_df
+
+def calculate_distances(df):
+    dist_df = (df
+               .transform(haversine_without_udf, 'first_lat', 'first_lon', 'last_lat', 'last_lon')
                .withColumn(
                    "time_delta", col("last_timestamp").cast(
                        "long") - col("first_timestamp").cast("long")
