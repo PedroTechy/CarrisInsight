@@ -10,4 +10,4 @@ FROM
 LEFT JOIN
   {{ source('staging_dataset', 'calendar_dates') }}  cd
 ON
-  date_day=cd.date ;
+  date_day=cd.date 

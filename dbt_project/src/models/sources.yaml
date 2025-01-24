@@ -22,7 +22,8 @@ sources:
     database: data-eng-dev-437916
     schema: data_eng_project_group3_staging
     tables:
-      - name: calendar_dates      
+      - name: calendar_dates
+      - name: dates      
       - name: lines
       - name: real_stop_times
       - name: stop_times
