@@ -1,2 +1,10 @@
 .DS_Store
 /.project
+*.json
+*/bin
+.project/bin
+*.csv
+*.txt
+__pycache__
+/.project
+/dbt_project/
