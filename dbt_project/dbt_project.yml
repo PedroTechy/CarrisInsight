@@ -1,0 +1,31 @@
+name: "edit_de_project"
+version: "1.0.0"
+config-version: 2
+
+profile: "edit_de_project"
+require-dbt-version: ">=1.6.0rc2"
+
+model-paths: ["src/models"]
+analysis-paths: ["src/analyses"]
+test-paths: ["src/tests"]
+seed-paths: ["src/seeds"]
+macro-paths: ["src/macros"]
+snapshot-paths: ["src/snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  truncate_timespan_to: "{{ current_timestamp() }}"
+  "dbt_date:time_zone": "Europe/Lisbon"
+
+models:
+  edit_de_project:
+    staging:
+      +dataset: staging
+      +materialized: view
+    marts:
+      +dataset: marts
+      +materialized: table

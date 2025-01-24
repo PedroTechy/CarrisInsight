@@ -1,0 +1,221 @@
+version: 2
+
+models:
+  - name: fact_trips
+    description: "Fact table for trip schedules including planned times, dates, distances, and average speed."
+    columns:
+      - name: trip_id
+        description: "Identifier for the trip."
+        tests:
+          - not_null
+      - name: planned_start_time
+        description: "Scheduled start time for the trip."
+        tests:
+          - not_null
+      - name: planned_end_time
+        description: "Scheduled end time for the trip."
+        tests:
+          - not_null 
+      - name: planned_date
+        description: "Planned service date for the trip."
+        tests:
+          - not_null 
+      - name: total_distance_traveled
+        description: "Total distance traveled for the trip."
+        tests:
+          - not_null
+          - minimum_value:
+              min_value: 0
+      - name: number_of_stops
+        description: "Total number of stops for the trip."
+        tests:
+          - not_null
+          - minimum_value:
+              min_value: 0
+      - name: sk_routes
+        description: "Surrogate key for routes."
+        tests:
+          - not_null
+      - name: average_speed_kmh
+        description: "Average speed of the trip in kilometers per hour."
+        tests:
+          - not_null
+          - minimum_value:
+              min_value: 0
+      - name: direction
+        description: "Direction of the trip (0 or 1)."
+        tests:
+          - not_null
+
+  - name: dim_routes
+    description: "Dimension table for routes including route details and associated municipalities."
+    columns:
+      - name: route_id
+        description: "Unique identifier for the route."
+        tests:
+          - unique
+          - not_null
+      - name: line_id
+        description: "Identifier for the specific line associated with the route."
+        tests:
+          - not_null
+      - name: route_name
+        description: "Name of the route."
+        tests:
+          - not_null
+      - name: line_name
+        description: "Name of the line."
+        tests:
+          - not_null
+      - name: list_municipality_name
+        description: "Names of the municipalities where the route operates."
+        tests:
+          - not_null
+
+  - name: dim_historical_trips
+    description: "Dimension table for historical trip data including real start and end times, delays, and trip dates."
+    columns:
+      - name: trip_id
+        description: "Unique identifier for the trip."
+        tests:
+          - unique
+          - not_null
+      - name: real_start_time
+        description: "The actual start time of the trip."
+        tests:
+          - not_null
+      - name: real_end_time
+        description: "The actual end time of the trip."
+        tests:
+          - not_null
+      - name: trip_date
+        description: "The date of the trip."
+        tests:
+          - not_null
+      - name: departed_late
+        description: "Indicates if the trip departed late."
+        tests:
+          - not_null
+      - name: arrived_late
+        description: "Indicates if the trip arrived late."
+        tests:
+          - not_null
+      - name: accumulated_delay
+        description: "Total accumulated delay for the trip."
+      - name: ingested_at
+        description: "Timestamp when the data was ingested."
+        tests:
+          - not_null
+
+  - name: dim_date
+    description: "Dimension table about the date."
+    columns:
+      - name: date_day
+        description: "Date."
+      - name: prior_date_day
+        description: "Date of the previous day."
+      - name: next_date_day
+        description: "Date of the next day."
+      - name: prior_year_date_day
+        description: "Date of the same day in the previous year."
+      - name: prior_year_over_year_date_day
+        description: "Date of the same day in the year before the previous year."
+      - name: day_of_week
+        description: "Day of the week."
+      - name: day_of_week_name
+        description: "Name of the day of the week."
+      - name: day_of_week_name_short
+        description: "Short name of the day of the week."
+      - name: day_of_month
+        description: "Day of the month."
+      - name: day_of_year
+        description: "Day of the year."
+      - name: week_start_date
+        description: "Start date of the week."
+      - name: week_end_date
+        description: "End date of the week."
+      - name: prior_year_week_start_date
+        description: "Start date of the week in the previous year."
+      - name: prior_year_week_end_date
+        description: "End date of the week in the previous year."
+      - name: week_of_year
+        description: "Week of the year."
+      - name: iso_week_start_date
+        description: "Start date of the ISO week."
+      - name: iso_week_end_date
+        description: "End date of the ISO week."
+      - name: prior_year_iso_week_start_date
+        description: "Start date of the ISO week in the previous year."
+      - name: prior_year_iso_week_end_date
+        description: "End date of the ISO week in the previous year."
+      - name: iso_week_of_year
+        description: "ISO week of the year."
+      - name: prior_year_week_of_year
+        description: "Week of the year in the previous year."
+      - name: prior_year_iso_week_of_year
+        description: "ISO week of the year in the previous year."
+      - name: month_of_year
+        description: "Month of the year."
+      - name: month_name
+        description: "Name of the month."
+      - name: month_name_short
+        description: "Short name of the month."
+      - name: month_start_date
+        description: "Start date of the month."
+      - name: month_end_date
+        description: "End date of the month."
+      - name: prior_year_month_start_date
+        description: "Start date of the month in the previous year."
+      - name: prior_year_month_end_date
+        description: "End date of the month in the previous year."
+      - name: quarter_of_year
+        description: "Quarter of the year."
+      - name: quarter_start_date
+        description: "Start date of the quarter."
+      - name: quarter_end_date
+        description: "End date of the quarter."
+      - name: year_number
+        description: "Year number."
+      - name: year_start_date
+        description: "Start date of the year."
+      - name: year_end_date
+        description: "End date of the year."
+      - name: day_type
+        description: "Type of day (e.g., weekday, weekend)."
+      - name: exception_type
+        description: "Exception type for the date."
+      - name: holiday
+        description: "Indicates if the date is a holiday."
+      - name: period_name
+        description: "Time period classification."
+      - name: ingested_at
+        description: "Timestamp when the data was ingested."
+
+  - name: dim_weather
+    description: "Dimension table for weather data including temperature, wind speed, precipitation, and weather type."
+    columns:
+      - name: date
+        description: "The date of the weather observation."
+        tests:
+          - not_null
+          - unique
+      - name: max_temperature
+        description: "Maximum temperature recorded on the date."
+      - name: min_temperature
+        description: "Minimum temperature recorded on the date."
+      - name: wind_speed_class
+        description: "The classification of the wind speed during the trip (e.g., weak, moderate, strong)."
+        tests:
+          - not_null
+      - name: precipitation_class
+        description: "The classification of precipitation during the trip (e.g., no precipitation, weak, moderate, strong)."
+        tests:
+          - not_null
+      - name: weather_type
+        description: "The type of weather observed during the trip (e.g., clear sky, rain, fog)."
+        tests:
+          - not_null
+      - name: ingested_at
+        description: "Timestamp when the data was ingested."
+        tests:
+          - not_null

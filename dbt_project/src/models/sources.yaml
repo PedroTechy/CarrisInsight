@@ -1,0 +1,43 @@
+version: 2
+
+sources:
+  - name: raw_dataset
+    database:  data-eng-dev-437916
+    schema: data_eng_project_group3_raw  
+    tables:
+      - name: calendar_dates
+      - name: dates
+      - name: historical_stop_times
+      - name: lines
+      - name: municipalities
+      - name: periods
+      - name: routes
+      - name: shapes
+      - name: stop_times
+      - name: stops
+      - name: trips
+      - name: weather_data
+
+  - name: staging_dataset
+    database: data-eng-dev-437916
+    schema: data_eng_project_group3_staging
+    tables:
+      - name: calendar_dates
+      - name: dates      
+      - name: lines
+      - name: real_stop_times
+      - name: stop_times
+      - name: routes
+      - name: stops
+      - name: trips
+      - name: weather_data
+      
+  - name: marts_dataset
+    database: data-eng-dev-437916
+    schema: data_eng_project_group3_marts
+    tables:
+      - name: dim_calendar_dates      
+      - name: dim_date
+      - name: dim_routes
+      - name: dim_weather
+      - name: fact_trips
