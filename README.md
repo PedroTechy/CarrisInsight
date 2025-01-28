@@ -66,40 +66,11 @@ This project is organized into three main folders, each corresponding to a key c
 * Python
 
 ## Deliverables 
-* Dashbaord mockup
+* Dashboard mockup
 
 ## Optional Features
 * Add extra data sources to enrich output:
    -- weather, traffic, cultural/social events, interest points 
-* 
-
-## Checklist 
-
-### Bucket for dags
- -  https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&invt=Abl7xA&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false
-
-### Bucket for raw data dump and staging 
- - 
-
-### Bucket for reading streaming data 
- - https://console.cloud.google.com/storage/browser/edit-de-project-streaming-data/carris-vehicles;tab=objects?inv=1&invt=Abl7xw&prefix=&forceOnObjectsSortingFiltering=false&authuser=1
-
-### Access to Airflow 
-  - [Airflow](https://edit-data-eng.duckdns.org/)
-  - [DAG scripts](https://console.cloud.google.com/storage/browser/edit-de-project-airflow-dags/dags;tab=objects?authuser=1&inv=1&invt=Abl9Ew&project=data-eng-dev-437916&pli=1&prefix=&forceOnObjectsSortingFiltering=false)
-
-### Access to BigQuery
-  - https://console.cloud.google.com/bigquery?authuser=0&project=data-eng-dev-437916
-
-
-## Project notes diary
-
-### Day 1 
- - Extract data from API and load in bucket
-      https://github.com/googleapis/python-storage/blob/main/samples/snippets/storage_upload_file.py
-
- - Get data from bucket - transform to tabular - load to big query 
-
 
 
 
